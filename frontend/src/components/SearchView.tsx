@@ -18,6 +18,7 @@ function SearchView() {
     const [ address, setAddress ] = useState<string>("");
 
     const locationString = query.get("near") || "";
+    const keywordString = query.get("q") || "";
     useEffect(() => {
         if (locationString?.match(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/)) {
             setLocation({lat: parseFloat(locationString.split(",")[0]), lng: parseFloat(locationString.split(",")[1])});
@@ -26,8 +27,9 @@ function SearchView() {
             setAddress(locationString);
             setLocation(initLocation);
         }
-        setKeyword(query.get("q") || "");
-    }, [locationString])
+        setKeyword(keywordString);
+    }, [locationString, keywordString])
+
 
     return (
         <div>

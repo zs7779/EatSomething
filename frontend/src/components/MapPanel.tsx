@@ -2,24 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { mapQueryType, mapLocationType } from '../utils/types';
 
 
-function geocodeAddress(
+function searchGeocodeAddress(
     map: google.maps.Map,
+    service: google.maps.places.PlacesService,
+    keyword: string, setMarkers: (m: google.maps.Marker[])=>void,
     location?: mapLocationType,
     address?: string,
 ): void {
+    const readyListener = google.maps.event.addListener(map, 'idle', function () {
+        searchNearby(map, service, keyword, setMarkers)
+        google.maps.event.removeListener(readyListener);
+    });
     if (location) {
+        // If location given, do not use geocode
         map.setCenter(location);
         map.setZoom(13);
     } else if (address) {
+        // Create boundry to limit geocode search
+        const mapCenter = map.getCenter();
+        const searchBounds = mapCenter ? new google.maps.LatLngBounds(
+            {lat: mapCenter.lat()-1, lng: mapCenter.lng()-1}, {lat: mapCenter.lat()+1, lng: mapCenter.lng()+1}) : undefined;
+        
+        // Geocode service
         const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ address: address }, (results, status) => {
+        geocoder.geocode({ address: address, bounds: searchBounds }, (results, status) => {
+            console.log("Geocode", status);
             if (status === "OK") {
                 map.setCenter(results[0].geometry.location);
                 // map.fitBounds(results[0].geometry.bounds);
                 map.setZoom(13);
-                console.log("Geocode");
-            } else {
-                console.log("Geocode was not successful for the following reason: " + status);
             }
         });
     } else {
@@ -28,7 +39,7 @@ function geocodeAddress(
 }
 
 function searchNearby(map: google.maps.Map, service: google.maps.places.PlacesService,
-                      keyword: string, setMarker: (m: google.maps.Marker[])=>void) {
+                      keyword: string, setMarkers: (m: google.maps.Marker[])=>void) {
     const query: google.maps.places.PlaceSearchRequest = {
         location: map.getCenter(),
         bounds: map.getBounds() || undefined,
@@ -37,12 +48,10 @@ function searchNearby(map: google.maps.Map, service: google.maps.places.PlacesSe
     // Search nearby
     service.nearbySearch(
         query,
-        (results, status, pagination) => {
-            console.log("Search nearby", status);
-            
+        (results, status) => {
+            console.log("NearbySearch", status);
             if (status !== "OK") return;
-            console.log(results[0]);
-            setMarker(results
+            setMarkers(results
                 .filter(restaurant => restaurant.geometry && restaurant.name)
                 .map(restaurant => new google.maps.Marker({
                         position: restaurant?.geometry?.location,
@@ -50,17 +59,14 @@ function searchNearby(map: google.maps.Map, service: google.maps.places.PlacesSe
                         title: restaurant.name,
                     })
                 ))
-            // if (pagination.hasNextPage) {
-            //     pagination.nextPage;
-            // }
         }
     );
 }
 
 function clearMarker(markers: google.maps.Marker[] | undefined,
-                     setMarker: (m: google.maps.Marker[])=>void) {
+                     setMarkers: (m: google.maps.Marker[])=>void) {
     if (markers) {
-        setMarker(markers.map(m => {
+        setMarkers(markers.map(m => {
             m.setMap(null);
             return m;
         }));
@@ -77,26 +83,18 @@ function MapPanel({keyword, location, address} : mapQueryType) {
     const [ mapReady, setReady ] = useState<boolean>(false);
     const mapElement = document.getElementById("map");
 
-    // if (map) {
-    //     console.log("yes");
-    // } else {
-    //     console.log("no");
-    // }
-    // console.log(map);
-
     useEffect(() => {
         // Initialize map only once
         if (mapElement) {
             const mapObj = new google.maps.Map(mapElement, {
                 zoom: 13,
             });
-            const readyListener = google.maps.event.addListener( mapObj, 'idle', function () {
-                console.log("Map idle");
+            const readyListener = google.maps.event.addListener(mapObj, 'idle', function () {
                 if (!mapReady) {
                     setReady(true);
-                    google.maps.event.removeListener(readyListener);
-                    console.log("Listener removed");
+                    console.log("Map ready");
                 }
+                google.maps.event.removeListener(readyListener);
             });
             setMap(mapObj);
             setService(new google.maps.places.PlacesService(mapObj));
@@ -104,17 +102,21 @@ function MapPanel({keyword, location, address} : mapQueryType) {
         } else {
             console.log("Map element missing");
         }
-    }, [mapElement])
+    }, [mapElement]);
 
     useEffect(() => {
-        console.log("change", keyword, location, address, mapReady);
         if (mapReady && map && service) {
             clearMarker(markers, setMarkers);
-            geocodeAddress(map, location, address);
+            searchGeocodeAddress(map, service, keyword, setMarkers, location, address);
+        }
+    }, [location, address, mapReady]);
+    
+    useEffect(() => {
+        if (mapReady && map && service) {
+            clearMarker(markers, setMarkers);
             searchNearby(map, service, keyword, setMarkers)
         }
-    }, [keyword, location, address, mapReady])
-    
+    }, [keyword]);
 
     return (
         <div id="map" style={mapStyle}></div>
