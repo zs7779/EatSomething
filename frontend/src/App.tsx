@@ -22,9 +22,6 @@ function App() {
             <Link to="/" className="mx-1">home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/search" className="mx-1">search</Link>
-          </li>
-          <li className="nav-item">
             <Link to="/booking" className="mx-1">booking</Link>
           </li>
           <li className="nav-item">

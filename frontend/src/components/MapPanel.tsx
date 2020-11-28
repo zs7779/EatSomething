@@ -5,12 +5,12 @@ import { mapQueryType, mapLocationType } from '../utils/types';
 function searchGeocodeAddress(
     map: google.maps.Map,
     service: google.maps.places.PlacesService,
-    keyword: string, setMarkers: (m: google.maps.Marker[])=>void,
+    keyword: string,
     location?: mapLocationType,
     address?: string,
 ): void {
     const readyListener = google.maps.event.addListener(map, 'idle', function () {
-        searchNearby(map, service, keyword, setMarkers)
+        searchNearby(map, service, keyword)
         google.maps.event.removeListener(readyListener);
     });
     if (location) {
@@ -39,7 +39,7 @@ function searchGeocodeAddress(
 }
 
 function searchNearby(map: google.maps.Map, service: google.maps.places.PlacesService,
-                      keyword: string, setMarkers: (m: google.maps.Marker[])=>void) {
+                      keyword: string) {
     const query: google.maps.places.PlaceSearchRequest = {
         location: map.getCenter(),
         bounds: map.getBounds() || undefined,
@@ -51,72 +51,51 @@ function searchNearby(map: google.maps.Map, service: google.maps.places.PlacesSe
         (results, status) => {
             console.log("NearbySearch", status);
             if (status !== "OK") return;
-            setMarkers(results
+            results
                 .filter(restaurant => restaurant.geometry && restaurant.name)
                 .map(restaurant => new google.maps.Marker({
                         position: restaurant?.geometry?.location,
                         map,
                         title: restaurant.name,
                     })
-                ))
+                )
         }
     );
 }
 
-function clearMarker(markers: google.maps.Marker[] | undefined,
-                     setMarkers: (m: google.maps.Marker[])=>void) {
-    if (markers) {
-        setMarkers(markers.map(m => {
-            m.setMap(null);
-            return m;
-        }));
-        console.log("Markers cleared");
-    } else {
-        console.log("No marker");
-    }
-}
-
 function MapPanel({keyword, location, address} : mapQueryType) {
-    const [ map, setMap ] = useState<google.maps.Map>();
-    const [ service, setService ] = useState<google.maps.places.PlacesService>();
-    const [ markers, setMarkers ] = useState<google.maps.Marker[]>([]);
-    const [ mapReady, setReady ] = useState<boolean>(false);
+    const [ oldKeyword, setKeyword ] = useState(keyword);
+    const [ oldLocation, setLocation ] = useState(location);
     const mapElement = document.getElementById("map");
 
     useEffect(() => {
-        // Initialize map only once
         if (mapElement) {
-            const mapObj = new google.maps.Map(mapElement, {
+            const map = new google.maps.Map(mapElement, {
+                center: oldLocation,
                 zoom: 13,
             });
-            const readyListener = google.maps.event.addListener(mapObj, 'idle', function () {
-                if (!mapReady) {
-                    setReady(true);
-                    console.log("Map ready");
-                }
-                google.maps.event.removeListener(readyListener);
+            google.maps.event.addListener(map, 'center_changed', function () {
+                // Everytime map center change
+                const newCenter = map.getCenter();
+                setLocation(newCenter.toJSON());
             });
-            setMap(mapObj);
-            setService(new google.maps.places.PlacesService(mapObj));
-            console.log("Map initialized");
-        } else {
-            console.log("Map element missing");
+            const service = new google.maps.places.PlacesService(map);
+            if (keyword !== oldKeyword) {
+                console.log("keyword change");
+                const readyListener = google.maps.event.addListener(map, 'idle', function () {
+                    searchNearby(map, service, keyword);
+                    google.maps.event.removeListener(readyListener);
+                });    
+            } else {
+                console.log("other change");
+                const readyListener = google.maps.event.addListener(map, 'idle', function () {
+                    searchGeocodeAddress(map, service, keyword, location, address)
+                    google.maps.event.removeListener(readyListener);
+                });
+            }
+            setKeyword(keyword);
         }
-    }, [mapElement]);
-
-    useEffect(() => {
-        if (mapReady && map && service) {
-            clearMarker(markers, setMarkers);
-            searchGeocodeAddress(map, service, keyword, setMarkers, location, address);
-        }
-    }, [location, address, mapReady]);
-    
-    useEffect(() => {
-        if (mapReady && map && service) {
-            clearMarker(markers, setMarkers);
-            searchNearby(map, service, keyword, setMarkers)
-        }
-    }, [keyword]);
+    }, [keyword, location, address, mapElement]);
 
     return (
         <div id="map" style={mapStyle}></div>
