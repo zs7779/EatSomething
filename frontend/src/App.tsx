@@ -13,7 +13,7 @@ import ConfirmationView from './components/ConfirmationView';
 
 function App() {
   return (
-    <div className="container" style={containerStyle}>
+    <div>
 
       <Router>
       <header>
@@ -58,9 +58,5 @@ function App() {
     </div>
   );
 }
-
-const containerStyle: Record<string, string> = {
-  height: "100vh"
-};
 
 export default App;

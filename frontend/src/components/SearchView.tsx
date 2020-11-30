@@ -33,8 +33,6 @@ function SearchView() {
 
     return (
         <div>
-            {locationString}<br/>
-            {address ? `add ${address}` : `loc ${location.lat},${location.lat}`}<br/>
             <SearchPanel lastQuery={keyword} lastLocation={locationString || ""} />
             <MapPanel keyword={keyword}
                 location={address==="" ? location : undefined}

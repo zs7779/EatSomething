@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { searchQueryType, locationType } from '../utils/types';
+import '../css/SearchPanel.css';
 
 
 function SearchPanel({lastQuery, lastLocation}: searchQueryType) {    
@@ -41,21 +42,17 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
             <div>
                 <input type="text" name="search" value={query}
                     placeholder="Restaurant or Cuisine" onChange={onQuery}
-                    className="form-control mx-2" size={50} style={inputStyle}
+                    className="form-control mx-2 input-box" size={50}
                     required
                 />
                 <input type="text" name="location" value={location}
                     placeholder="Location" onChange={onLocation}
-                    className="form-control mx-2" size={30} style={inputStyle}
+                    className="form-control mx-2 input-box" size={30}
                 />
-                <button className="btn btn-primary px-5" onClick={onSearch} style={inputStyle}>Go</button>
+                <button className="btn btn-primary px-5 input-box" onClick={onSearch}>Go</button>
             </div>
         </form>
     )
 }
-
-const inputStyle: Record<string, string> = {
-    'borderRadius': '10px'
-};
     
 export default SearchPanel;
