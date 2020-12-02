@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import SearchPanel from './components/SearchPanel';
 import SearchView from './components/SearchView';
-import RestaurantView from './components/RestaurantView';
+import PlaceView from './components/PlaceView';
 import BookingView from './components/BookingView';
 import DeliverView from './components/DeliverView';
 import ConfirmationView from './components/ConfirmationView';
@@ -49,8 +49,8 @@ function App() {
           <Route path="/confirmation">
             <ConfirmationView />
           </Route>
-          <Route path="/:restaurant">
-            <RestaurantView />
+          <Route path="/place/:placeID">
+            <PlaceView />
           </Route>
         </Switch>
       </Router>

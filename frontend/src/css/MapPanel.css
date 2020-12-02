@@ -1,3 +1,7 @@
+a {
+    color: unset;
+}
+
 .map-panel {
     display: grid;
     grid-template-columns: 360px auto;
@@ -7,6 +11,13 @@
 
 .info-card {
     border: 1px solid #f5f5f5;
+}
+.info-card:hover {
+    background-color: rgb(247, 255, 255);
+}
+.info-card:hover > a {
+    text-decoration: none;
+    cursor: default;
 }
 
 #searchResult {

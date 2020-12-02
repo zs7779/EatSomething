@@ -1,0 +1,8 @@
+.place-view {
+    display: grid;
+    grid-template-columns: auto 640px 320px auto;
+}
+
+.place-info {
+
+}
