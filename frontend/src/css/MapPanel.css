@@ -1,7 +1,3 @@
-a {
-    color: unset;
-}
-
 .map-panel {
     display: grid;
     grid-template-columns: 360px auto;
@@ -13,7 +9,10 @@ a {
     border: 1px solid #f5f5f5;
 }
 .info-card:hover {
-    background-color: rgb(247, 255, 255);
+    background-color: rgb(250, 250, 250);
+}
+.info-card > a {
+    color: unset;
 }
 .info-card:hover > a {
     text-decoration: none;

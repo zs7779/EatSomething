@@ -15,11 +15,21 @@ export interface searchQueryType {
 export interface mapLocationType {
     lat: number;
     lng: number;
-    
 }
 
 export interface mapQueryType {
     keyword: string;
     location?: mapLocationType;
     address?: string;
+}
+
+export interface menuItemType {
+    name: string;
+    description: string;
+    price: number;
+}
+
+export interface menuType {
+    name: string;
+    items: menuItemType[];
 }

@@ -4,13 +4,20 @@ import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import App from './App';
+import modalReducer from './reducers/modalReducer';
 import reportWebVitals from './reportWebVitals';
 import './css/index.css';
 
 
+const store = createStore(
+  modalReducer
+);
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

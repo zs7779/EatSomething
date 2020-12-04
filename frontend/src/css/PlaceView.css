@@ -1,8 +1,4 @@
 .place-view {
     display: grid;
-    grid-template-columns: auto 640px 320px auto;
-}
-
-.place-info {
-
+    grid-template-columns: auto 840px 360px auto;
 }

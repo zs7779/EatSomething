@@ -134,9 +134,6 @@ function MapPanel({keyword, location, address} : mapQueryType) {
                             <small className="text-muted">{business.types.join(" · ")}</small><br/>
                             <small className="text-muted">{business.address}</small><br/>
                             <OpenUntil openingTime={business.opening_time} className="small text-muted"/><br/>
-                            {/* {business.dine_in && <button type="button" className="btn btn-danger mx-1">Dine-in</button>}
-                            {business.takeaway && <button type="button" className="btn btn-danger mx-1">Takeout</button>}
-                            {business.delivery && <button type="button" className="btn btn-danger mx-1">Delivery</button>} */}
                         </div></Link>
                     </li>)}
                 </ul>
