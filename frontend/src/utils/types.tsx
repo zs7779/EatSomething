@@ -33,3 +33,9 @@ export interface menuType {
     name: string;
     items: menuItemType[];
 }
+
+export interface orderItemType {
+    name: string;
+    price: number;
+    quantity: number;
+}

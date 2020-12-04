@@ -1,9 +1,11 @@
-import { menuItemType } from '../utils/types';
+import { menuItemType, orderItemType } from '../utils/types';
 
-export interface actionType {
+export interface modalActionType {
     type: string;
+    data: menuItemType|null;
 }
 
-export interface modalActionType extends actionType {
-    data: menuItemType|null;
+export interface orderActionType {
+    type: string;
+    data: orderItemType;
 }

@@ -1,17 +1,21 @@
 import './css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import { createStore, combineReducers  } from 'redux';
 import { Provider } from 'react-redux';
 import App from './App';
 import modalReducer from './reducers/modalReducer';
+import orderReducer from './reducers/orderReducer';
 import reportWebVitals from './reportWebVitals';
 import './css/index.css';
 
 
-const store = createStore(
-  modalReducer
-);
+const store = createStore(combineReducers({
+    modal: modalReducer,
+    order: orderReducer,
+}));
+
+store.subscribe(() => console.log(store.getState()));
 
 ReactDOM.render(
   <React.StrictMode>

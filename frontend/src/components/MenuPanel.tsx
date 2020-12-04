@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useState } from 'react';
-import { menuType, menuItemType } from '../utils/types';
-import { useSelector, useDispatch } from 'react-redux';
+import { menuType, menuItemType, orderItemType } from '../utils/types';
+import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
 import { modalShow, modalHide } from '../reducers/modalReducer';
+import { orderAdd } from '../reducers/orderReducer';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import '../css/MenuPanel.css';
@@ -9,15 +10,33 @@ import '../css/MenuPanel.css';
 
 function OrderModal() {
     const dispatch = useDispatch();
-    const item = useSelector(state => state as menuItemType|null);
+    const item = useSelector((state: {modal:DefaultRootState, order:DefaultRootState}) => state.modal as menuItemType|null);
     const show = item !== null;
-    const [ quantity, setQuantity ] = useState(0);
+    const [ quantity, setQuantity ] = useState(1);
     const totalPrice = item ? item.price * quantity : 0;
 
-    const handleClose = () => dispatch(modalHide());
+    console.log(item,show);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setQuantity(parseInt(e.target.value));
+    };
+    const handleClose = () => {
+        dispatch(modalHide());
+        setQuantity(1);
+    };
+    const handleAdd = () => {
+        if (item) {
+            dispatch(orderAdd({
+                name: item.name,
+                price: item.price,
+                quantity: quantity,
+            } as orderItemType));
+        } else {
+            console.log("No item");
+        }
+        setQuantity(1);
     }
+    
 
     return (<Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
@@ -33,9 +52,10 @@ function OrderModal() {
             <Button variant="secondary" onClick={handleClose}>
                 Cancel
             </Button>
-            {item && <div className="d-flex">
+            {item && <div className="d-flex align-items-center">
+                <span>Quantity: </span>
                 <input type="number" defaultValue={1} min="1" max="99" onChange={handleChange} className="form-control number mx-1"/>
-                <Button variant="outline-primary" onClick={handleClose} className="add-button">
+                <Button variant="outline-primary" onClick={handleAdd} className="add-button">
                     ${totalPrice.toFixed(2)} Add to Order
                 </Button>
             </div>}

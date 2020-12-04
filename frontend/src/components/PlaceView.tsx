@@ -1,7 +1,9 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
+import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
 import MenuPanel from "./MenuPanel";
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
+import { orderItemType } from '../utils/types';
 import '../css/PlaceView.css';
 
 
@@ -76,6 +78,7 @@ const business = {
 
 function PlaceView() {
     const { placeID }: { placeID:string } = useParams();
+    const order = useSelector((state: {modal:DefaultRootState, order:DefaultRootState}) => state.order as orderItemType[]);
 
     const handleShow = () => {
         console.log("book");
@@ -93,6 +96,10 @@ function PlaceView() {
             <MenuPanel menu={business.menu}></MenuPanel>
         </div>
         <div className="booking-info p-3">
+            {order.map(item => <div key={item.name}>
+                <div>{item.name}</div>
+            </div>
+            )}
             <div className="card card-body shadow-sm rounded">
                 <h5>Book a meal</h5>
                 <div className="d-flex justify-content-center">
