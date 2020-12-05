@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
 import MenuPanel from "./MenuPanel";
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
 import { orderItemType } from '../utils/types';
+import { orderChange } from '../reducers/orderReducer';
 import '../css/PlaceView.css';
 
 
@@ -79,10 +80,29 @@ const business = {
 function PlaceView() {
     const { placeID }: { placeID:string } = useParams();
     const order = useSelector((state: {modal:DefaultRootState, order:DefaultRootState}) => state.order as orderItemType[]);
+    const dispatch = useDispatch();
 
     const handleShow = () => {
         console.log("book");
     };
+
+    const itemPrice = (item: orderItemType) => item.price * item.quantity;
+    const totalPrice = (order: orderItemType[]) => {
+        return order.reduce((curr:number, item:orderItemType)=>curr+itemPrice(item), 0);
+    }
+    const handleOrderChange = (item: orderItemType) => {
+        return (e: ChangeEvent<HTMLInputElement>) => {
+            if (item) {
+                dispatch(orderChange({
+                    name: item.name,
+                    price: item.price,
+                    quantity: parseInt(e.target.value),
+                } as orderItemType));
+            } else {
+                console.log("No item");
+            }
+        }
+    }
 
     return (
     <div className="place-view">
@@ -96,16 +116,26 @@ function PlaceView() {
             <MenuPanel menu={business.menu}></MenuPanel>
         </div>
         <div className="booking-info p-3">
-            {order.map(item => <div key={item.name}>
-                <div>{item.name}</div>
-            </div>
-            )}
             <div className="card card-body shadow-sm rounded">
-                <h5>Book a meal</h5>
+                <h5>Order</h5>
+                <div>
+                    {order.map(item => <div key={item.name}>
+                        <div className="my-1">
+                            <input type="number" onChange={handleOrderChange(item)}
+                                defaultValue={item.quantity} min={0} max={99} className="form-control number"/>
+                            {item.name}
+                        </div>
+                    </div>)}
+                    <hr/>
+                    <div className="float-right">Total: ${totalPrice(order).toFixed(2)}</div>
+                </div>
+                <hr/>
                 <div className="d-flex justify-content-center">
                     {/* {business.dine_in && <button type="button" onClick={handleShow} className="btn btn-danger mx-1">Dine-in</button>} */}
-                    {business.takeaway && <button type="button" onClick={handleShow} className="btn btn-danger px-4 mx-1">Takeout</button>}
-                    {business.delivery && <button type="button" onClick={handleShow} className="btn btn-danger px-4 mx-1">Delivery</button>}
+                    {business.takeaway && <button type="button" onClick={handleShow} disabled={order.length === 0}
+                        className="btn btn-danger px-4 mx-1">Takeout</button>}
+                    {business.delivery && <button type="button" onClick={handleShow} disabled={order.length === 0}
+                        className="btn btn-danger px-4 mx-1">Delivery</button>}
                 </div>
             </div>
             <div className="card card-body shadow-sm mt-3">

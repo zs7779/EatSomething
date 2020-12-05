@@ -2,7 +2,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { menuType, menuItemType, orderItemType } from '../utils/types';
 import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
 import { modalShow, modalHide } from '../reducers/modalReducer';
-import { orderAdd } from '../reducers/orderReducer';
+import { orderChange } from '../reducers/orderReducer';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import '../css/MenuPanel.css';
@@ -15,8 +15,6 @@ function OrderModal() {
     const [ quantity, setQuantity ] = useState(1);
     const totalPrice = item ? item.price * quantity : 0;
 
-    console.log(item,show);
-
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setQuantity(parseInt(e.target.value));
     };
@@ -26,7 +24,7 @@ function OrderModal() {
     };
     const handleAdd = () => {
         if (item) {
-            dispatch(orderAdd({
+            dispatch(orderChange({
                 name: item.name,
                 price: item.price,
                 quantity: quantity,
@@ -34,6 +32,7 @@ function OrderModal() {
         } else {
             console.log("No item");
         }
+        dispatch(modalHide());
         setQuantity(1);
     }
     
