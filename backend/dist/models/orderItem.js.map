@@ -1,0 +1,1 @@
+{"version":3,"file":"orderItem.js","sourceRoot":"","sources":["../../src/models/orderItem.ts"],"names":[],"mappings":";;;;;;AAAA,wDAAgC;AAChC,yCAA4C;AAG5C,MAAM,eAAe,GAAG,IAAI,kBAAQ,CAAC,MAAM,CAAC;IACxC,IAAI,EAAE,yBAAc;IACpB,QAAQ,EAAE,MAAM;CACnB,CAAC,CAAC;AAIK,0CAAe;AAFvB,MAAM,SAAS,GAAG,kBAAQ,CAAC,KAAK,CAAC,WAAW,EAAE,eAAe,CAAC,CAAC;AAG/D,kBAAe,SAAS,CAAC"}
