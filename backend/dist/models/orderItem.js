@@ -11,6 +11,13 @@ const orderItemSchema = new mongoose_1.default.Schema({
     quantity: Number
 });
 exports.orderItemSchema = orderItemSchema;
+orderItemSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+});
 const OrderItem = mongoose_1.default.model("orderItem", orderItemSchema);
 exports.default = OrderItem;
 //# sourceMappingURL=orderItem.js.map

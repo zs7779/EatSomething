@@ -10,6 +10,13 @@ const orderSchema = new mongoose_1.default.Schema({
     items: [orderItem_1.orderItemSchema],
 });
 exports.orderSchema = orderSchema;
+orderSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+});
 const Order = mongoose_1.default.model("order", orderSchema);
 exports.default = Order;
 //# sourceMappingURL=order.js.map

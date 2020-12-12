@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from "express";
+import cors from "cors";
 import mongoose from "mongoose";
 import Menu from "./models/menu";
 import Business from "./models/business";
@@ -11,6 +12,8 @@ const dbname = "gofood";
 const url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.7mie9.mongodb.net/${dbname}?retryWrites=true&w=majority`;
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+    .then(result => {    console.log('connected to MongoDB')  })
+    .catch((error) => {    console.log('error connecting to MongoDB:', error.message)  });
 
 
 const requestLogger = (request: Request, response: Response, next: NextFunction) => {
@@ -19,6 +22,7 @@ const requestLogger = (request: Request, response: Response, next: NextFunction)
   }
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 
@@ -92,14 +96,13 @@ app.post('/api/business', (request: Request, response: Response) => {
         ],
       });
     newBusiness.save().then(res => {
-        mongoose.connection.close();
+        // mongoose.connection.close();
         response.json(newBusiness);
     });
 });
 
 app.get('/api/business', (request: Request, response: Response) => {
     Business.find({}).then(res => {
-        mongoose.connection.close();
         response.json(res);
     })
 });
@@ -107,21 +110,22 @@ app.get('/api/business', (request: Request, response: Response) => {
 app.get('/api/business/:id', (request: Request, response: Response) => {
     const id = request.params.id;
     Business.findById("5fd2d068c244ad0ab0e4fc85").then(res => {
-        mongoose.connection.close();
         response.json(res);
+    }).catch(error => {
+        console.log(error);
+        response.status(500).end();
     });
 });
 
 app.post('/api/order', (request: Request, response: Response) => {
     Business.find({}).then(res => {
-        mongoose.connection.close();
+        // mongoose.connection.close();
         response.json(res);
     })
 });
 
 app.get('/api/order', (request: Request, response: Response) => {
     Business.find({}).then(res => {
-        mongoose.connection.close();
         response.json(res);
     })
 });

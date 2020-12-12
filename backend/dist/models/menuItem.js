@@ -11,6 +11,13 @@ const menuItemSchema = new mongoose_1.default.Schema({
     price: Number
 });
 exports.menuItemSchema = menuItemSchema;
+menuItemSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+});
 const MenuItem = mongoose_1.default.model("menuItem", menuItemSchema);
 exports.default = MenuItem;
 //# sourceMappingURL=menuItem.js.map

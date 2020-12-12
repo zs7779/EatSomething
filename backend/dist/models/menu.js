@@ -11,6 +11,13 @@ const menuSchema = new mongoose_1.default.Schema({
     items: [menuItem_1.menuItemSchema]
 });
 exports.menuSchema = menuSchema;
+menuSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+});
 const Menu = mongoose_1.default.model("menu", menuSchema);
 exports.default = Menu;
 //# sourceMappingURL=menu.js.map

@@ -23,6 +23,13 @@ const businessSchema = new mongoose_1.default.Schema({
     menus: [menu_1.menuSchema]
 });
 exports.businessSchema = businessSchema;
+businessSchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+});
 const Business = mongoose_1.default.model("business", businessSchema);
 exports.default = Business;
 //# sourceMappingURL=business.js.map

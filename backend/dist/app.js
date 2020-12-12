@@ -5,17 +5,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const business_1 = __importDefault(require("./models/business"));
 dotenv_1.default.config();
 const dbname = "gofood";
 const url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.7mie9.mongodb.net/${dbname}?retryWrites=true&w=majority`;
-mongoose_1.default.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true });
+mongoose_1.default.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+    .then(result => { console.log('connected to MongoDB'); })
+    .catch((error) => { console.log('error connecting to MongoDB:', error.message); });
 const requestLogger = (request, response, next) => {
     console.log(request.method, request.path);
     next();
 };
 const app = express_1.default();
+app.use(cors_1.default());
 app.use(express_1.default.json());
 app.use(requestLogger);
 app.post('/api/business', (request, response) => {
@@ -88,32 +92,32 @@ app.post('/api/business', (request, response) => {
         ],
     });
     newBusiness.save().then(res => {
-        mongoose_1.default.connection.close();
+        // mongoose.connection.close();
         response.json(newBusiness);
     });
 });
 app.get('/api/business', (request, response) => {
     business_1.default.find({}).then(res => {
-        mongoose_1.default.connection.close();
         response.json(res);
     });
 });
 app.get('/api/business/:id', (request, response) => {
     const id = request.params.id;
     business_1.default.findById("5fd2d068c244ad0ab0e4fc85").then(res => {
-        mongoose_1.default.connection.close();
         response.json(res);
+    }).catch(error => {
+        console.log(error);
+        response.status(500).end();
     });
 });
 app.post('/api/order', (request, response) => {
     business_1.default.find({}).then(res => {
-        mongoose_1.default.connection.close();
+        // mongoose.connection.close();
         response.json(res);
     });
 });
 app.get('/api/order', (request, response) => {
     business_1.default.find({}).then(res => {
-        mongoose_1.default.connection.close();
         response.json(res);
     });
 });
