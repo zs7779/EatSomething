@@ -5,9 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.orderItemSchema = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const menuItem_1 = require("./menuItem");
 const orderItemSchema = new mongoose_1.default.Schema({
-    item: menuItem_1.menuItemSchema,
+    item: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "MenuItem"
+    },
     quantity: Number
 });
 exports.orderItemSchema = orderItemSchema;
@@ -18,6 +20,6 @@ orderItemSchema.set("toJSON", {
         delete returnedObject.__v;
     }
 });
-const OrderItem = mongoose_1.default.model("orderItem", orderItemSchema);
+const OrderItem = mongoose_1.default.model("OrderItem", orderItemSchema);
 exports.default = OrderItem;
 //# sourceMappingURL=orderItem.js.map

@@ -1,9 +1,11 @@
 import mongoose, { Document } from "mongoose";
-import { menuItemSchema } from "./menuItem";
 
 
 const orderItemSchema = new mongoose.Schema({
-    item: menuItemSchema,
+    item: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MenuItem"
+    },
     quantity: Number
 });
 orderItemSchema.set("toJSON", {
@@ -13,7 +15,7 @@ orderItemSchema.set("toJSON", {
         delete returnedObject.__v;
     }
 });
-const OrderItem = mongoose.model("orderItem", orderItemSchema);
+const OrderItem = mongoose.model("OrderItem", orderItemSchema);
 
 export {orderItemSchema};
 export default OrderItem;

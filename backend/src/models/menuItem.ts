@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
+
 const menuItemSchema = new mongoose.Schema({
     name: String,
     description: String,
@@ -12,7 +13,7 @@ menuItemSchema.set("toJSON", {
         delete returnedObject.__v;
     }
 });
-const MenuItem = mongoose.model("menuItem", menuItemSchema);
+const MenuItem = mongoose.model("MenuItem", menuItemSchema);
 
 export {menuItemSchema};
 export default MenuItem;

@@ -6,9 +6,8 @@ import {
 import SearchPanel from './components/SearchPanel';
 import SearchView from './components/SearchView';
 import PlaceView from './components/PlaceView';
-import BookingView from './components/BookingView';
-import DeliverView from './components/DeliverView';
 import ConfirmationView from './components/ConfirmationView';
+import ManageView from './components/ManageView';
 
 
 function App() {
@@ -22,13 +21,10 @@ function App() {
             <Link to="/" className="mx-1">home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/booking" className="mx-1">booking</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/delivery" className="mx-1">delivery</Link>
-          </li>
-          <li className="nav-item">
             <Link to="/confirmation" className="mx-1">confirmation</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/manage" className="mx-1">manage</Link>
           </li>
         </ul>
       </header>
@@ -40,14 +36,11 @@ function App() {
           <Route path="/search">
             <SearchView />
           </Route>
-          <Route path="/booking">
-            <BookingView />
-          </Route>
-          <Route path="/delivery">
-            <DeliverView />
-          </Route>
           <Route path="/confirmation">
             <ConfirmationView />
+          </Route>
+          <Route path="/manage">
+            <ManageView />
           </Route>
           <Route path="/place/:placeID">
             <PlaceView />

@@ -5,8 +5,9 @@ import MenuPanel from "./MenuPanel";
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
 import { orderItemType } from '../utils/types';
 import { orderChange } from '../reducers/orderReducer';
-import '../css/PlaceView.css';
 import axios from 'axios';
+import '../css/PlaceView.css';
+
 
 const base_url = "http://localhost:3001";
 

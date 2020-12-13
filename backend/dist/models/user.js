@@ -3,23 +3,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.menuSchema = void 0;
+exports.userSchema = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const menuSchema = new mongoose_1.default.Schema({
+const userSchema = new mongoose_1.default.Schema({
+    username: String,
     name: String,
-    items: [{
+    passwordHash: String,
+    business: [{
             type: mongoose_1.default.Schema.Types.ObjectId,
-            ref: "MenuItem"
+            ref: "Business"
         }]
 });
-exports.menuSchema = menuSchema;
-menuSchema.set("toJSON", {
+exports.userSchema = userSchema;
+userSchema.set("toJSON", {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString();
         delete returnedObject._id;
         delete returnedObject.__v;
+        delete returnedObject.passwordHash;
     }
 });
-const Menu = mongoose_1.default.model("Menu", menuSchema);
-exports.default = Menu;
-//# sourceMappingURL=menu.js.map
+const User = mongoose_1.default.model("User", userSchema);
+exports.default = User;
+//# sourceMappingURL=user.js.map

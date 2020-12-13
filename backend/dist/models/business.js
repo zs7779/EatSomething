@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.businessSchema = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const menu_1 = require("./menu");
 const businessSchema = new mongoose_1.default.Schema({
     name: String,
     address: String,
@@ -20,7 +19,10 @@ const businessSchema = new mongoose_1.default.Schema({
     user_ratings_total: Number,
     parking: [String],
     payment: [String],
-    menus: [menu_1.menuSchema]
+    menus: [{
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "Menu"
+        }]
 });
 exports.businessSchema = businessSchema;
 businessSchema.set("toJSON", {
@@ -30,6 +32,6 @@ businessSchema.set("toJSON", {
         delete returnedObject.__v;
     }
 });
-const Business = mongoose_1.default.model("business", businessSchema);
+const Business = mongoose_1.default.model("Business", businessSchema);
 exports.default = Business;
 //# sourceMappingURL=business.js.map

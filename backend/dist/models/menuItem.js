@@ -18,6 +18,6 @@ menuItemSchema.set("toJSON", {
         delete returnedObject.__v;
     }
 });
-const MenuItem = mongoose_1.default.model("menuItem", menuItemSchema);
+const MenuItem = mongoose_1.default.model("MenuItem", menuItemSchema);
 exports.default = MenuItem;
 //# sourceMappingURL=menuItem.js.map

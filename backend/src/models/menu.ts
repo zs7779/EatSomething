@@ -1,10 +1,12 @@
 import mongoose, { Document } from "mongoose";
-import { menuItemSchema } from "./menuItem";
 
 
 const menuSchema = new mongoose.Schema({
     name: String,
-    items: [menuItemSchema]
+    items: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MenuItem"
+    }]
 });
 menuSchema.set("toJSON", {
     transform: (document: Document, returnedObject: Document) => {
@@ -13,7 +15,7 @@ menuSchema.set("toJSON", {
         delete returnedObject.__v;
     }
 });
-const Menu = mongoose.model("menu", menuSchema);
+const Menu = mongoose.model("Menu", menuSchema);
 
 export {menuSchema};
 export default Menu;
