@@ -1,1 +1,0 @@
-Whip up something in React Express.js Mongodb just for the heck of it
