@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import Menu from "./models/menu";
 import Business from "./models/business";
 import { businessType } from './types';
 
@@ -96,8 +95,8 @@ app.post('/api/business', (request: Request, response: Response) => {
         ],
       });
     newBusiness.save().then(res => {
-        // mongoose.connection.close();
         response.json(newBusiness);
+        // mongoose.connection.close();
     });
 });
 

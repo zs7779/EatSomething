@@ -25,8 +25,8 @@ export interface businessType {
     rating: number;
     user_ratings_total: number;
     opening_time: String[];
-    types: String[];
+    keywords: String[];
     parking: String[];
     payment: String[];
-    menu: menuSectionType[];    
+    menus: menuSectionType[];    
 }

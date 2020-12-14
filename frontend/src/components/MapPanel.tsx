@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import axios from 'axios';
+
 import { mapQueryType, mapLocationType } from '../utils/types';
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
-import '../css/MapPanel.css'
+import '../css/MapPanel.css';
 
 
 function searchGeocodeAddress(
@@ -87,10 +89,19 @@ const business = {
     user_ratings_total: 296, //generate
 };
 
+const base_url = "http://localhost:3001";
+
 function MapPanel({keyword, location, address} : mapQueryType) {
     const [ oldKeyword, setKeyword ] = useState(keyword);
     const [ oldLocation, setLocation ] = useState(location);
     const mapElement = document.getElementById("map");
+
+    useEffect(() => {
+        axios.get(`${base_url}/api/business/`).then((res) => {
+            console.log(res.data);
+            // setBusiness(res.data);
+        });
+    }, [keyword]);
 
     // useEffect(() => {
     //     if (mapElement) {

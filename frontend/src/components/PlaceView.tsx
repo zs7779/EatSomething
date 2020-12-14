@@ -1,11 +1,12 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
+import axios from 'axios';
+
 import MenuPanel from "./MenuPanel";
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
 import { orderItemType } from '../utils/types';
 import { orderChange } from '../reducers/orderReducer';
-import axios from 'axios';
 import '../css/PlaceView.css';
 
 
@@ -19,7 +20,7 @@ function PlaceView() {
 
     useEffect(() => {
         axios.get(`${base_url}/api/business/${placeID}/`).then((res) => {
-            console.log(res.data);
+            // console.log(res.data);
             setBusiness(res.data);
         });
     }, [placeID]);
@@ -44,7 +45,7 @@ function PlaceView() {
                 console.log("No item");
             }
         }
-    };
+    };    
 
     return (
     <div className="place-view">

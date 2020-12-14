@@ -1,11 +1,9 @@
 import mongoose, { Document } from "mongoose";
+import {orderItemObj} from "./orderItemObj";
 
 
 const orderSchema = new mongoose.Schema({
-    items: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "OrderItem"
-    }],
+    items: [orderItemObj],
 });
 orderSchema.set("toJSON", {
     transform: (document: Document, returnedObject: Document) => {

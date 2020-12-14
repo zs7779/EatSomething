@@ -1,4 +1,5 @@
 import mongoose, { Document } from "mongoose";
+import {menuObj} from "./menuObj";
 
 
 const businessSchema = new mongoose.Schema({
@@ -15,10 +16,7 @@ const businessSchema = new mongoose.Schema({
     user_ratings_total:  Number,
     parking: [String],
     payment: [String],
-    menus: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Menu"
-    }]
+    menus: [menuObj]
 });
 businessSchema.set("toJSON", {
     transform: (document: Document, returnedObject: Document) => {
