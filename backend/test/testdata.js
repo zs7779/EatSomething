@@ -31,13 +31,12 @@ console.log("Data size", addrLines.length);
 
 
 function name() {
-    const firstNames = ["", "", "", "", "", "The", "The", "The", "The", "The", "Mama\'s", "Mamma\'s", "Daisy\'s", "Joe\'s", "James\'", "Nikki\'s",
-    "Guud", "Le Goût de", "La Perle de", "Yuma\'s", "The Taste of", "Olivia\'s", "Little", "La Nuit", "Le Saphir", "L\'Ultima", "Il Capitano"];
-    const middleNames = ["", "", "", "", "", "Pizza", "Salt", "Sugar", "Lemon", "Magical", "Korean", "Szechuan", "Texas", "Japanese", "Homemade",
-    "Teppanyaki", "Chinese", "Indian", "Bento", "Sweet", "Tulip", "Olive", "Seafood", "Mediterranean", "Mexican", "Thai"];
-    const lastNames = ["Elephant", "Summer", "Autumn", "Fox", "Avenue", "Maple", "Pizza", "Noddle", "Dumpling", "Sunset",
-    "Mirage", "Gem", "Factory", "Kitchen", "Pho", "BBQ", "Kitchen and Bar", "Wings", "Steakhouse", "Garden", "Cena", "Pasta", "Pastascuiutta",
-    "Don", "Sushi", "Bistro", "Banquet", "Ristorante", "Breakfast"];
+    const firstNames = ["", "", "", "", "", "The", "The", "The", "The", "The", "Mama\'s", "Mamma\'s", "Daisy\'s", "Joe\'s", "James\'", "Nikki\'s", "Elephant", "Fox", "Maple",
+    "Seo-Jun", "Le Goût de", "La Perle de", "Yuma\'s", "Kaito\'s", "Sakura", "The Taste of", "Olivia\'s", "Little", "La Nuit", "Le Saphir", "L\'Ultima", "Il Capitano"];
+    const middleNames = ["", "", "", "", "", "Pizza", "Spicy", "Favourite", "Lemon", "Magical", "Homemade", "Teppanyaki", "Bento", "Sweet", "Tulip", "Olive", "Seafood",
+    "Korean", "Szechuan", "Texas", "Japanese", "Mediterranean", "Mexican", "Thai", "Chinese", "Indian", "Mongolian"];
+    const lastNames = ["Pizza", "Noddle", "Dumpling", "Pho", "BBQ", "Wings", "Pasta", "Pastascuiutta", "Don", "Sushi",
+    "Gem", "Factory", "Steakhouse", "Garden", "Cena", "Kitchen and Bar", "Kitchen", "Mirage", "Sunset", "Breakfast", "Corner", "Avenue", "Bistro", "Banquet", "Ristorante"];
     let randomName = [];
     randomName.push(firstNames[Math.floor(Math.random() * firstNames.length)]);
     randomName.push(middleNames[Math.floor(Math.random() * middleNames.length)]);
@@ -64,8 +63,9 @@ function opening_time() {
 }
 function keywords() {
     const locationKey = ["Canadian", "Korean", "Chinese", "Indian", "Italian", "French", "Turkish", "American", "Mexican", "Japanese", "Thai",
-    "European", "Asian", "Mediterranean", "African", "Fusion"];
-    const otherKey = ["Breakfast", "Lunch", "Fast food", "Fine dining", "Farm-to-table", "Comfort food", "Pub", "Bar", "Wine tasting",
+    "Vietnam", "Mongolian", "Spanish",
+    "European", "Asian", "Mediterranean", "African", "Fusion", "Continental"];
+    const otherKey = ["Breakfast", "Lunch", "Brunch", "Fast food", "Fine dining", "Farm-to-table", "Comfort food", "Pub", "Bar", "Wine tasting",
     "Noddle", "Dumpling", "Pizza", "Pho", "BBQ", "Wings", "Steakhouse", "Pasta", "Sushi", "Teppanyaki", "Seafood", "Burger",
     "Cocktail", "Wine", "Beer"];
     let pickKey = [locationKey[Math.floor(Math.random() * locationKey.length)]];
@@ -81,6 +81,91 @@ function payment() {
     const allPayment = ["Visa", "MasterCard", "AMEX", "Discover"];
     return allPayment.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 4) + 1);
 }
+function menu(mainKey="") {
+    const menuKey = ["Appetizers", "Mains", "Sides", "Dessert",
+    "Salad", "Pizza", "Sandwich", "Burger", "Pasta", "Noodle", "Soup",
+    "Drinks", "Wine", "Beer", "Cocktail"];
+    const adjective = {
+        Appetizers:["Spicy", "Sweet", "Marinated", "Fresh", "House", "Daily", "Baked", "Grilled", "Green",
+            "Miso", "Avocado", "Salmon", "Egg", "Seaweed", "Tuna", "Crispy", "Kimchi", "Mango", "Lemon"],
+        Mains:["Spicy", "Sweet", "Marinated", "Fresh", "House", "Daily", "Baked", "Grilled", "Signiture",
+            "Beef", "Pao", "Butter", "Garlic", "BBQ", "Cajun", "Braised", "Roasted", "Smoked", "Sautéed"],
+        Sides:["Spicy", "Sweet", "Marinated", "Fresh", "House", "Daily", "Baked", "Grilled", "Green",
+            "Miso", "Avocado", "Salmon", "Egg", "Seaweed", "Tuna", "Crispy", "Kimchi", "Mango", "Lemon"],
+        Dessert:["Chocolate", "Apple", "Cranberry", "Vanilla", "Molten", "Carrot", "Mini", "Caramel", "Banana", "Rainbow", "Fruit", "Mango", "Masala", "Cinnamon"],
+        Salad:["Miso", "Avocado", "Salmon", "Egg", "Seaweed", "Tuna", "Crispy", "Kimchi", "Mango", "Lemon", "Greek", "Caesar"],
+        Pizza:["12\"", "Funghi", "Pesto", "Venezia", "Mediterranean", "Anchovy", "Pepperoni", "Artichoke", "Bolognese", "Tropical", "Hawaiian", "Canadian", "Chili"],
+        Sandwich:["Jerk", "Beef", "Cheese", "Fish", "Chicken", "Lamb", "Pork", "Shrimp"],
+        Burger:["Jerk", "Beef", "Cheese", "Fish", "Chicken", "Lamb", "Pork", "Shrimp"],
+        Pasta:["Polpette", "Meat Ball", "Bolognese", "Meat Sauce", "Funghi", "Pesto", "Venezia", "Calabrese", "Gamberi", "Zucca", "Melanzane"],
+        Noodle:["Beef", "Fish", "Chicken", "Lamb", "Pork", "Shrimp", "Stir Fried"],
+        Soup:["Miso", "Daily", "Tomato"],
+        Drinks: ["Coffee", "Tea", "Espresso", "Cappuccino", "Latte", "Mocha", "Americano", "Hot Chocolate", "Bourbon", "Rye", "Scotch"],
+        Wine: ["Malbec", "Cabernet Sauvignon", "Sauvignon Blanc", "Chardonnay", "Nigori", "Sake", "Pinot Grigio", "Sancerre", "Merlot", "Ice Wine", "Baco Noir",
+            "Pinot Gris", "Pinot Noir"],
+        Beer:["Sapporo", "Asahi", "Lager", "Pale Ale", "Cider", "Brown Ale"],
+        Cocktail:["Lychee", "Sakura", "Plum", "Jeju", "Ginger", "Citrus", "Twisted", "Blueberry", "Cranberry", "Espresso", "Osaka", "Melon", "Long Island",
+            "Vodka", "Gin", "Rum", "Coke", "Whiskey", "Scotch", "Soda", "Toronto", "Astro", "Red", "White", "Black", "Pink", "Lemon", "Salty", "Bloody", "Cuban"]
+    };
+    const substantive = {
+        Appetizers:["Salad", "Soup", "Tofu", "Pancake", "Appetizer", "Salami", "Cheese", "Fries", "Plate", "Roll", "Tataki", "Sashimi", "Gyoza", "Tacos", "Teriyaki"],
+        Mains:["Fillet", "Ribs", "Cod", "Noodle", "Lasagna", "Ravioli", "Risotto", "Spaghetti", "Lamb", "Tuna", "Steak", "Sausage", "Ribeye", "Tacos", "Chicken", "Fajitas",
+            "Bibimbap", "Bowl", "Salmon", "Bento Box", "Roll", "Noodle", "Rice", "Udon", "Sirloin", "Lobster", "Sushi"],
+        Sides:["Salad", "Soup", "Tofu", "Pancake", "Appetizer", "Salami", "Cheese", "Fries", "Plate", "Roll", "Tataki", "Sashimi", "Gyoza", "Tacos"],
+        Dessert:["Cake", "Brownie", "Crisp", "Pie", "Pudding", "Sundae", "Cream", "Cheesecake"],
+        Salad:["Salad"],
+        Pizza:["Pizza"],
+        Sandwich:["Sandwich"],
+        Burger:["Burger", "Mini Burger"],
+        Pasta:["Lasagna", "Pasta", "Spaghetti", "Ravioli", "Tagliatelle", "Fettuccine", "Linguini", "Penne"],
+        Noodle:["Noodle", "Udon", "Pasta", "Pho", "Pad Thai"],
+        Soup:["Soup"],
+        Drinks: [],
+        Wine: [],
+        Beer:[],
+        Cocktail:["Caesar", "Saketini", "Martini", "Ice Tea", "Sunset", "Colada", "Breeze", "Old Fashined", "Mai Tai", "Mary", "Margarita", "Spiritz", "Mojito",
+            "Manhattan", "Sour", "Volcano", "Punch", "Cocktail", "Sunrise", "Blanco", "Russian", "Lemonade"]
+    };
+    const ingredients = ["sprouts", "tofu", "mushroom", "egg", "onion", "sesame", "tomato", "grapefruit", "ponzu", "lettuce", "soy beans", "cucumber", "radish",
+        "cabbage", "wasabi", "mayo", "avocado", "chili sauce", "sweet chili", "butter", "garlic", "leeks", "tuna", "shrimp", "salmon", "crab", "cream", "cheese",
+        "eel", "seasonal vegetable", "kimchi", "maple syrup", "jalapeno", "honey", "pickle", "olive oil", "garlic", "peppers", "roasted nuts", "kale", "chicken",
+        "mozzarella", "basil", "spinach", "oilves", "red onions", "goat cheese", "penna sauce", "dried fruits", "kiwi", "curry", "mixed herbs", "coconut shavings",
+        "chocolate", "coleslaw", "French Fries", "Chef's signiture dressing", "cajun mayo", "sesame oil"];
+    
+    const randomMenus = [];
+    const randomMenuInt = Math.floor(Math.random() * 4) + 1; // 1 to 4 menus
+    const randomMenuKey = menuKey.sort(() => 0.5 - Math.random());
+    for ( let m = 0; m < randomMenuInt; m++ ) {
+        const randomMenu = {
+            name: randomMenuKey.pop(),
+            items: []
+        };
+        const randomItemInt = Math.floor(Math.random() * 5) + 4; // number of items on a menu range between 4 to 8
+        const randomBasePrice = Math.floor(Math.random() * 27) + 3 + (Math.random() > 0.5 ? 0.5 : 0) + (Math.random() > 0.5 ? 0.99 : 0); // random + $0.99
+        for ( let i = 0; i < randomItemInt ; i++ ) {
+            if (["Drinks", "Wine", "Beer"].includes(randomMenu.name)) {
+                const randomAdjs = adjective[randomMenu.name].sort(() => 0.5 - Math.random()).slice(0, 1); // 1 to 4 adjectives
+                randomMenu.items.push({
+                    name: [...randomAdjs].join(" "),
+                    description: "",
+                    price: `$${(randomBasePrice + Math.floor(Math.random() * 16)).toFixed(2)}` // add $0 to $15 to base price
+                });
+            } else {
+                const randomAdjs = adjective[randomMenu.name].sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 3) + 1); // 1 to 3 adjectives
+                const randomSubj = substantive[randomMenu.name].sort(() => 0.5 - Math.random()).slice(0, 1); // at most 1 substantive
+                const randomIngredients = ingredients.sort(() => 0.5 - Math.random()); // 2 to 9 random ingredients
+                randomMenu.items.push({
+                    name: [...randomAdjs, ...randomSubj].join(" "),
+                    description: randomIngredients.slice(0, Math.floor(Math.random() * 6) + 2).join(", ").concat(`, and ${randomIngredients[randomIngredients.length-1]}`),
+                    price: `$${(randomBasePrice + Math.floor(Math.random() * 16)).toFixed(2)}` // add $0 to $15 to base price
+                });
+            }
+        }
+        randomMenus.push(randomMenu);
+    }
+    
+    return randomMenus;
+}
 
 function makeNewBusiness() {
     const business = {
@@ -92,58 +177,12 @@ function makeNewBusiness() {
         dine_in: Math.random() < 0.5 ? true : false,
         takeaway: Math.random() < 0.9 ? true : false,
         delivery: Math.random() < 0.5 ? true : false,
-        price_level: Math.floor(Math.random() * 4) + 1,
-        rating: (Math.floor(Math.random() * 40) + 10) / 10,
-        user_ratings_total: Math.floor(Math.random() * 2000),
+        price_level: Math.floor(Math.random() * 5) + 1, // range between 1 to 5
+        rating: (Math.floor(Math.random() * 30) + 20) / 10, // range between 2.0 to 4.9
+        user_ratings_total: Math.floor(Math.random() * 2000), // range between 0 to 1999
         parking: parking(),
         payment: payment(),
-//         menus: [
-//             {
-//                 name: "18\" Family Mammas Specialty Pizza",
-//                 items: [
-//                     {
-//                         name: "18\" Mammas Meatball Pizza 1",
-//                         description: "Fourteen slices.  cheese, green and black olives, sundried tomatoes, and feta cheese.",
-//                         price: 21.99,
-//                     },
-//                     {
-//                         name: "18\" Mammas Meatball Pizza 2",
-//                         description: "Fourteen slices. Tomato sauce,  green and black olives, sundried tomatoes, and feta cheese.",
-//                         price: 22.99,
-//                     },
-//                     {
-//                         name: "18\" Mammas Meatball Pizza 3",
-//                         description: "Fourteen slices. Tomato sauce, cheese, sundried tomatoes, and feta cheese.",
-//                         price: 23.99,
-//                     },
-//                     {
-//                         name: "18\" Mammas Meatball Pizza 4",
-//                         description: "Fourteen slices. Tomato sauce, cheese, green and black olives, ",
-//                         price: 24.99,
-//                     },
-//                 ],
-//             },
-//             {
-//                 name: "18\" Family Gourmet Vegan Pizzas",
-//                 items: [
-//                     {
-//                         name: "18\" Family Gourmet Vegan Pizzas 1",
-//                         description: " Olive oil, roasted potatoes, roasted red peppers, eggplant, broccoli, garlic, and oregano.",
-//                         price: 25.99,
-//                     },
-//                     {
-//                         name: "18\" Family Gourmet Vegan Pizzas 2",
-//                         description: "Fourteen oil, roasted potatoes, roasted red peppers, eggplant",
-//                         price: 26.99,
-//                     },
-//                     {
-//                         name: "18\" Family Gourmet Vegan Pizzas 3",
-//                         description: "Fourteen slices. Olive oil, roasted potatoes, roasted red peppers, garlic, and oregano.",
-//                         price: 27.99,
-//                     },
-//                 ],
-//             },
-//         ],
+        menus: menu()
     };
     console.log(business);
 }

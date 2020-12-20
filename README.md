@@ -1,7 +1,7 @@
 **This project is called GOFOOD. No it's THE BLUE HARVEST. No it doesn't have a name.**
 
 
-This is a food takeout / food delivery platform. On this platform restaurant / business managers can set up their home page and put out menus, where anonymous / registered customers can order food on a takeout / delivery order.
+This is a food takeout / food delivery platform. On this platform restaurant / business managers can set up their home page and put out menus, where anonymous / registered customers can order food on a takeout / delivery order. This project is written in HTML, CSS, Typescript, React, Node.js, Express.js, MongoDB.
 
 
 Managers can:

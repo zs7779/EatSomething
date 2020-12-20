@@ -2,7 +2,11 @@ import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+
 import Business from "./models/business";
+import userRouter from "./controllers/user";
+import loginRouter from "./controllers/login";
+import registerRouter from "./controllers/register";
 import { businessType } from './types';
 
 dotenv.config();
@@ -24,6 +28,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
+
+app.use('/api/register', registerRouter);
+app.use('/api/login', loginRouter);
+app.use('/api/user', userRouter);
 
 app.post('/api/business', (request: Request, response: Response) => {
     const newBusiness = new Business({
