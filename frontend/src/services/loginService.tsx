@@ -7,16 +7,26 @@ interface credentialType {
 }
 
 const login = async (credentials: credentialType) => {
-  const response = await axios.post(baseUrl, credentials);
+  const response = await axios.post(baseUrl, credentials, {
+    headers: {
+        "Content-type": "application/json"
+    }
+  });
   return response.data;
 }
 
-const storeToken = (token: string) => {
-    window.localStorage.setItem('logintoken', JSON.stringify(token)); 
+const logout = () => {
+  window.localStorage.removeItem('logintoken');
+}
+
+const storeToken = (token: string) => { 
+  console.log(token);
+  
+  window.localStorage.setItem('logintoken', token);  
 }
 
 const getToken = () => {
-    return window.localStorage.getItem('logintoken');
+  return window.localStorage.getItem('logintoken');
 }
 
-export default { login, storeToken, getToken };
+export default { login, logout, storeToken, getToken };
