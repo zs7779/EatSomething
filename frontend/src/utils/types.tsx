@@ -39,3 +39,20 @@ export interface orderItemType {
     price: number;
     quantity: number;
 }
+
+export interface restaurantType {
+    name: string;
+    address: string;
+    location: mapLocationType;
+    opening_time: string[];
+    keywords:  string[];
+    dine_in: boolean;
+    takeaway: boolean;
+    delivery: boolean;
+    price_level: number;
+    rating: number;
+    user_ratings_total: number;
+    parking: string[];
+    payment: string[];
+    menus: menuType[];
+}

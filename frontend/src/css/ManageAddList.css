@@ -1,0 +1,8 @@
+.selected-badge {
+    font-size: 1em;
+    border: 1px black solid;
+}
+
+.selected-x {
+    cursor: pointer;
+}
