@@ -1,0 +1,10 @@
+.menu-card {
+    padding: 0.5em 1em;
+    margin: 0.5em;
+    width: 360px;
+    border-radius: 20px;
+}
+
+.menu-card > * {
+    margin: 0.25em 0;
+}

@@ -26,7 +26,7 @@ function ManageAddPanel() {
     // const parkingChoices = ["Complimentary parking", "Public parking", "Street parking", "Underground parking", "Valet parking"];
 
     return (
-        <form>
+        <form onSubmit={(e) => e.preventDefault()}>
             <div className="form-group">
                 <label htmlFor="restaurantName"><h5>Restaurant Name:</h5></label>
                 <input type="text" className="form-control" id="restaurantName" placeholder="Restaurant Name"
