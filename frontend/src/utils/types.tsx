@@ -1,3 +1,8 @@
+export interface credentialType {
+    username: string;
+    password: string;
+}
+
 export interface coordinatesType {
     latitude: number;
     longitude: number;
@@ -43,16 +48,16 @@ export interface orderItemType {
 export interface restaurantType {
     name: string;
     address: string;
-    location: mapLocationType;
     opening_time: string[];
     keywords:  string[];
-    dine_in: boolean;
+    // dine_in: boolean;
     takeaway: boolean;
     delivery: boolean;
-    price_level: number;
-    rating: number;
-    user_ratings_total: number;
-    parking: string[];
+    // parking: string[];
     payment: string[];
     menus: menuType[];
+    location: mapLocationType;
+    price_level?: number;
+    rating?: number;
+    user_ratings_total?: number;
 }

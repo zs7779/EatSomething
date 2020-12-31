@@ -1,15 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, Router } from "express";
+
 import User from "../models/user";
+import { getTokenFromRequest } from "../utils";
 
-
-const getTokenFrom = (request: Request) => {  
-    const authorization = request.get('authorization')  
-    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {    
-        return authorization.substring(7);
-    }  
-    return null;
-}
 
 const userRouter = Router();
 
@@ -18,7 +12,7 @@ interface jwtType {
 }
 
 userRouter.get('/', async (request: Request, response: Response) => {
-    const token = getTokenFrom(request);
+    const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'token missing' });    
     } 

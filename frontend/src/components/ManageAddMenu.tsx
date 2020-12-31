@@ -4,7 +4,7 @@ import { menuType, menuItemType } from '../utils/types';
 import "../css/ManageAddMenu.css";
 
 
-function ManageMenuItem({menu, menus, setMenus}: {
+function ManageMenu({menu, menus, setMenus}: {
         menu: menuType,
         menus: menuType[],
         setMenus(arg: menuType[]): void
@@ -27,23 +27,29 @@ function ManageMenuItem({menu, menus, setMenus}: {
         setItemPrice(0);
     }
     const handleDeleteItem = (item: menuItemType) => {
-        console.log("delete item")
+        setMenus(menus.map(m => m.name === menu.name ? {
+            ...menu,
+            items: menu.items.filter(i => i.name === item.name ? false : true)
+        } : m));
     }
 
     return (
-        <div key={menu.name} className="border rounded p-2 mx-1 my-2">
+        <div key={menu.name}>
             <h5>{menu.name}</h5>
             <div className="d-flex flex-wrap">
                 {menu.items.map(item => (
                     <div className="card menu-card" key={item.name}>
                         <div>
-                            <span>{item.name}</span>
-                        </div>
-                        <div>
-                            <span>{item.description}</span>
-                        </div>
-                        <div>
-                            <span>${item.price}</span>
+                            <button className="float-right btn btn-light delete-button" onClick={() => handleDeleteItem(item)}>x</button>
+                            <div>
+                                <span>{item.name}</span>
+                            </div>
+                            <div>
+                                <span>{item.description}</span>
+                            </div>
+                            <div>
+                                <span>${item.price}</span>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -51,7 +57,7 @@ function ManageMenuItem({menu, menus, setMenus}: {
             <div className="card menu-card">
                 <input type="text" className="form-control" placeholder="Item name" maxLength={40}
                     value={itemName} onChange={(e) => setItemName(e.target.value)} />
-                <input type="text" className="form-control" placeholder="Description"
+                <textarea className="form-control" placeholder="Description" rows={3}
                     value={itemDescription} onChange={(e) => setItemDescription(e.target.value)} />
                 <div className="input-group">
                     <div className="input-group-prepend"><span className="input-group-text">$</span></div>
@@ -83,7 +89,7 @@ function ManageAddMenu({menus, setMenus}: {
         }
     }
     const handleDeleteMenu = (menu: menuType) => {
-        console.log("delete menu")
+        setMenus(menus.filter(m => m.name === menu.name ? false : true));
     }
 
     return (
@@ -91,11 +97,18 @@ function ManageAddMenu({menus, setMenus}: {
             <div className="form-group">
                 <div><h5>Menus:</h5></div>
                 {menus.map(menu => (
-                    <ManageMenuItem menu={menu} menus={menus} setMenus={setMenus} key={menu.name} />
+                    <div className="border rounded p-2 mx-1 my-2" key={menu.name}>
+                        <button className="float-right btn btn-light delete-button" onClick={() => handleDeleteMenu(menu)}>x</button>
+                        <ManageMenu menu={menu} menus={menus} setMenus={setMenus} />
+                    </div>
                 ))}
                 <div className="form-inline">
-                    <input type="text" className="form-control" placeholder="Menu name" value={menuName} onChange={(e)=>setMenuName(e.target.value)} />
-                    <button type="button" className="btn btn-outline-primary ml-1" onClick={handleAddMenu}>Add Menu</button>
+                    <input type="text" className="form-control" placeholder="Menu name"
+                        value={menuName}
+                        onChange={(e)=>setMenuName(e.target.value)} />
+                    <button type="button" className="btn btn-outline-primary ml-1"
+                        disabled={menuName===""}
+                        onClick={handleAddMenu}>Add Menu</button>
                 </div>
             </div>
         </div>

@@ -3,20 +3,21 @@ import {menuObj} from "./menuObj";
 
 
 const businessSchema = new mongoose.Schema({
+    manager: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     name: String,
     address: String,
-    location: { lat: Number, lng: Number },
     opening_time: [String],
     keywords: [String],
-    dine_in: Boolean,
+    // dine_in: Boolean,
     takeaway: Boolean,
     delivery: Boolean,
-    price_level: Number,
-    rating:  Number,
-    user_ratings_total:  Number,
-    parking: [String],
+    // parking: [String],
     payment: [String],
-    menus: [menuObj]
+    menus: [menuObj],
+    location: { lat: Number, lng: Number },
+    price_level: Number,
+    rating: Number,
+    user_ratings_total: Number
 });
 businessSchema.set("toJSON", {
     transform: (document: Document, returnedObject: Document) => {

@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
-import axios from "axios";
+import React, { FormEvent, useState } from 'react';
 
 import ManageAddList from './ManageAddList';
 import ManageAddMenu from './ManageAddMenu';
 import { menuType } from '../utils/types';
+import manageService from '../services/manageService';
 
-
-const base_url = "http://localhost:3001";
 
 function ManageAddPanel() {
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
+    const [openingTime, setOpeningTime] = useState<string[]>([
+        "09:00-21:00",
+        "09:00-21:00",
+        "09:00-21:00",
+        "09:00-21:00",
+        "09:00-21:00",
+        "09:00-21:00",
+        "09:00-21:00"
+    ]);
     const [keywords, setKeywords] = useState<string[]>([]);
     // const [parking, setParking] = useState<string[]>([]);
     const [payment, setPayment] = useState<string[]>([]);
     const [delivery, setDelivery] = useState(false);
     const [takeaway, setTakeaway] = useState(false);
     const [menus, setMenus] = useState<menuType[]>([]);
+    const [location, setLocation] = useState({lat: 0, lng: 0});
     
     const keywordChoices = ["Canadian", "Korean", "Chinese", "Indian", "Italian", "French", "Turkish", "American", "Mexican", "Japanese", "Thai",
     "Vietnam", "Mongolian", "Spanish", "European", "Asian", "Mediterranean", "African", "Fusion", "Continental", 
@@ -24,9 +32,65 @@ function ManageAddPanel() {
     "Pizza", "Pho", "BBQ", "Wings", "Steakhouse", "Sushi", "Teppanyaki", "Seafood"];
     const paymentChoices = ["Visa", "MasterCard", "AMEX", "Discover"];
     // const parkingChoices = ["Complimentary parking", "Public parking", "Street parking", "Underground parking", "Valet parking"];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    const deconstructTime = (timestr: string) => {
+        const [open, close] = timestr.split("-");
+        return [...open.split(":"), ...close.split(":")];
+    }
+    const handleOpenHour = (day: number, hour: string) => {
+        console.log(day, hour);
+        const hours = [...openingTime];
+        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
+        hours[day] = `${hour}:${openM}-${closeH}:${closeM}`;
+        setOpeningTime(hours);
+    }
+    const handleOpenMin = (day: number, minute: string) => {
+        console.log(day, minute);
+        const hours = [...openingTime];
+        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
+        hours[day] = `${openH}:${minute}-${closeH}:${closeM}`;
+        setOpeningTime(hours);
+    }
+    const handleCloseHour = (day: number, hour: string) => {
+        console.log(day, hour);
+        const hours = [...openingTime];
+        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
+        hours[day] = `${openH}:${openM}-${hour}:${closeM}`;
+        setOpeningTime(hours);
+    }
+    const handleCloseMin = (day: number, minute: string) => {
+        console.log(day, minute);
+        const hours = [...openingTime];
+        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
+        hours[day] = `${openH}:${openM}-${closeH}:${minute}`;
+        setOpeningTime(hours);
+    }
+
+    const handleSubmit = (e: FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        console.log("submit");
+        manageService.addBusiness({
+            name,
+            address,
+            opening_time: openingTime,
+            keywords,
+            payment,
+            delivery,
+            takeaway,
+            menus,
+            location
+        })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
 
     return (
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="restaurantName"><h5>Restaurant Name:</h5></label>
                 <input type="text" className="form-control" id="restaurantName" placeholder="Restaurant Name"
@@ -36,6 +100,30 @@ function ManageAddPanel() {
                 <label htmlFor="restaurantAddress"><h5>Restaurant Address:</h5></label>
                 <input type="text" className="form-control" id="restaurantAddress" placeholder="Address"
                     onChange={(e)=>setAddress(e.target.value)} />
+            </div><hr/>
+            <div className="form-group">
+                <label htmlFor="openTime"><h5>Opening Time:</h5></label>
+                <div id="openTime">
+                    {days.map((s, d) => (
+                        <div key={s}>
+                            <div className="form-inline">
+                                <label htmlFor={`${s}-ch`}>{s}:</label>
+                                <input type="number" className="form-control" id={`${s}-ch`}
+                                    min={0} max={23} step={1} value={deconstructTime(openingTime[d])[0]}
+                                    onChange={(e)=>handleOpenHour(d, e.target.value)} />
+                                <input type="number" className="form-control" id={`${s}-om`}
+                                    min={0} max={59} step={1} value={deconstructTime(openingTime[d])[1]}
+                                    onChange={(e)=>handleOpenMin(d, e.target.value)} />
+                                <input type="number" className="form-control" id={`${s}-ch`}
+                                    min={0} max={23} step={1} value={deconstructTime(openingTime[d])[2]}
+                                    onChange={(e)=>handleCloseHour(d, e.target.value)} />
+                                <input type="number" className="form-control" id={`${s}-cm`}
+                                    min={0} max={59} step={1} value={deconstructTime(openingTime[d])[3]}
+                                    onChange={(e)=>handleCloseMin(d, e.target.value)} />
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div><hr/>
             <ManageAddList list={keywords} setList={setKeywords} options={keywordChoices} limit={5} message={"Select up to 5 keywords:"} /><hr/>
             <ManageAddList list={payment} setList={setPayment} options={paymentChoices} limit={4} message={"Select up to 4 payment methods:"} /><hr/>

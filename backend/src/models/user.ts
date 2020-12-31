@@ -6,6 +6,7 @@ interface UserDocument extends Document {
     username: String,
     name: String,
     passwordHash: String;
+    business: mongoose.Schema.Types.ObjectId[];
 }
 const userSchema = new mongoose.Schema({
     username: {
