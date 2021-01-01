@@ -30,7 +30,7 @@ manageRouter.get('/', async (request: Request, response: Response) => {
             }
         })
         .catch(err => {
-            return response.status(500).json({ error: err });
+            return response.status(500).json({ error: err.message });
         });
 });
 
@@ -69,6 +69,9 @@ manageRouter.post('/restaurants', async (request: Request, response: Response) =
     user.save().then(res => {
         response.json(user);
     })
+        .catch(err => {
+            return response.status(500).json({ error: err.message });
+        });
 });
 
 // businessRouter.get('/api/business/:id', (request: Request, response: Response) => {

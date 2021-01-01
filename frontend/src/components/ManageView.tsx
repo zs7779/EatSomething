@@ -16,7 +16,7 @@ function ManageView() {
                 setManager(res);
             })
             .catch(err => {
-                console.log(err);
+                console.log(err.response.data.error);
             })
     }, [])
 
@@ -28,9 +28,11 @@ function ManageView() {
     return (
         <div className="business-view p-3">
             <h1 className="font-weight-bold">My Restaurants</h1>
-            <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(true)}>Add a restaurant</button>
+            {adding ? <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(false)}>Cancel</button> :
+                      <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(true)}>Add a restaurant</button>}
             <hr/>
-            {adding ? <ManageAddRestaurantPanel handleAddRestaurant={handleAddRestaurant}/> : <ManagePanel restaurants={manager.restaurants}/>}
+            {adding ? <ManageAddRestaurantPanel handleAddRestaurant={handleAddRestaurant}/> : 
+                      <ManagePanel restaurants={manager.restaurants}/>}
         </div>
     )
 }

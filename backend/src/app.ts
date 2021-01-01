@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import loginRouter from "./controllers/login";
 import registerRouter from "./controllers/register";
 import manageRouter from "./controllers/manage";
+import restaurantRouter from "./controllers/restaurant";
 
 
 dotenv.config();
@@ -31,6 +32,7 @@ app.use(requestLogger);
 app.use('/api/register', registerRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/manage', manageRouter);
+app.use('/api/restaurant/', restaurantRouter);
 
 // app.post('/api/order', (request: Request, response: Response) => {
 //     Business.find({}).then(res => {

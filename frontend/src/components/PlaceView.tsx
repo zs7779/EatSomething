@@ -19,10 +19,13 @@ function PlaceView() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        axios.get(`${base_url}/api/business/${placeID}/`).then((res) => {
+        axios.get(`${base_url}/api/restaurant/${placeID}/`).then((res) => {
             // console.log(res.data);
             setBusiness(res.data);
-        });
+        })
+            .catch(err => {
+                console.log(err.response.data.error);
+            });
     }, [placeID]);
 
     const handleShow = () => {

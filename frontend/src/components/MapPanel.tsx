@@ -97,10 +97,13 @@ function MapPanel({keyword, location, address} : mapQueryType) {
     const mapElement = document.getElementById("map");
 
     useEffect(() => {
-        axios.get(`${base_url}/api/business/`).then((res) => {
+        axios.get(`${base_url}/api/restaurant/`).then((res) => {
             console.log(res.data);
             // setBusiness(res.data);
-        });
+        })
+            .catch(err => {
+                console.log(err.response.data.error);
+            });
     }, [keyword]);
 
     // useEffect(() => {
