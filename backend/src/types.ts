@@ -10,7 +10,7 @@ export interface menuSectionType {
     items: menuItemType[];
 }
 
-export interface businessType {
+export interface restaurantType {
     id: String;
     name: String;
     address: String;
@@ -18,7 +18,7 @@ export interface businessType {
         lat:number;
         lng:number;
     };
-    dine_in: Boolean;
+    // dine_in: Boolean;
     takeaway: Boolean;
     delivery: Boolean;
     price_level: number;
@@ -26,7 +26,7 @@ export interface businessType {
     user_ratings_total: number;
     opening_time: String[];
     keywords: String[];
-    parking: String[];
+    // parking: String[];
     payment: String[];
     menus: menuSectionType[];    
 }

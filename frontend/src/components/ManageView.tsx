@@ -1,39 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
 
-import { restaurantType } from '../utils/types';
+import { managerType } from '../utils/types';
 import ManagePanel from "./ManagePanel";
-import ManageAddPanel from "./ManageAddPanel";
+import ManageAddRestaurantPanel from "./ManageAddRestaurantPanel";
+import manageService from '../services/manageService';
 import '../css/ManageView.css';
 
 
-const base_url = "http://localhost:3001";
-
 function ManageView() {
-    const [ restaurants, setRestaurants ] = useState<restaurantType[]>([]);
-
+    const [ manager, setManager ] = useState<managerType>({username: "", name: "", restaurants:[]} as managerType);
+    const [ adding, setAdding ] = useState(false);
     useEffect(()=>{
-        axios.get(`${base_url}/api/business`)
+        manageService.getManager()
             .then(res => {
-                setRestaurants(res.data);
+                setManager(res);
             })
             .catch(err => {
                 console.log(err);
             })
     }, [])
 
-    const handleAdd = () => {
-        console.log("add");
-        
+    const handleAddRestaurant = (updatedManager: managerType) => {
+        setManager(updatedManager);
+        setAdding(false);
     }
-
+    
     return (
         <div className="business-view p-3">
             <h1 className="font-weight-bold">My Restaurants</h1>
-            <button type="button" onClick={handleAdd}>Add a restaurant</button>
+            <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(true)}>Add a restaurant</button>
             <hr/>
-            <ManageAddPanel/>
-            <ManagePanel restaurants={restaurants}/>
+            {adding ? <ManageAddRestaurantPanel handleAddRestaurant={handleAddRestaurant}/> : <ManagePanel restaurants={manager.restaurants}/>}
         </div>
     )
 }

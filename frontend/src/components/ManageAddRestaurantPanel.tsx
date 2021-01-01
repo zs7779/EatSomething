@@ -2,11 +2,11 @@ import React, { FormEvent, useState } from 'react';
 
 import ManageAddList from './ManageAddList';
 import ManageAddMenu from './ManageAddMenu';
-import { menuType } from '../utils/types';
+import { managerType, menuType, } from '../utils/types';
 import manageService from '../services/manageService';
 
 
-function ManageAddPanel() {
+function ManageAddRestaurantPanel({handleAddRestaurant}: {handleAddRestaurant: (arg0: managerType)=>void}) {
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [openingTime, setOpeningTime] = useState<string[]>([
@@ -24,7 +24,7 @@ function ManageAddPanel() {
     const [delivery, setDelivery] = useState(false);
     const [takeaway, setTakeaway] = useState(false);
     const [menus, setMenus] = useState<menuType[]>([]);
-    const [location, setLocation] = useState({lat: 0, lng: 0});
+    const [location, setLocation] = useState({lat: "0", lng: "0"});
     
     const keywordChoices = ["Canadian", "Korean", "Chinese", "Indian", "Italian", "French", "Turkish", "American", "Mexican", "Japanese", "Thai",
     "Vietnam", "Mongolian", "Spanish", "European", "Asian", "Mediterranean", "African", "Fusion", "Continental", 
@@ -32,45 +32,24 @@ function ManageAddPanel() {
     "Pizza", "Pho", "BBQ", "Wings", "Steakhouse", "Sushi", "Teppanyaki", "Seafood"];
     const paymentChoices = ["Visa", "MasterCard", "AMEX", "Discover"];
     // const parkingChoices = ["Complimentary parking", "Public parking", "Street parking", "Underground parking", "Valet parking"];
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];    
 
     const deconstructTime = (timestr: string) => {
         const [open, close] = timestr.split("-");
         return [...open.split(":"), ...close.split(":")];
     }
-    const handleOpenHour = (day: number, hour: string) => {
-        console.log(day, hour);
+    const handleOpenTime = (day: number, newTime: string, slot: number) => {
         const hours = [...openingTime];
-        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
-        hours[day] = `${hour}:${openM}-${closeH}:${closeM}`;
-        setOpeningTime(hours);
-    }
-    const handleOpenMin = (day: number, minute: string) => {
-        console.log(day, minute);
-        const hours = [...openingTime];
-        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
-        hours[day] = `${openH}:${minute}-${closeH}:${closeM}`;
-        setOpeningTime(hours);
-    }
-    const handleCloseHour = (day: number, hour: string) => {
-        console.log(day, hour);
-        const hours = [...openingTime];
-        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
-        hours[day] = `${openH}:${openM}-${hour}:${closeM}`;
-        setOpeningTime(hours);
-    }
-    const handleCloseMin = (day: number, minute: string) => {
-        console.log(day, minute);
-        const hours = [...openingTime];
-        const [openH, openM, closeH, closeM] = deconstructTime(hours[day]);
-        hours[day] = `${openH}:${openM}-${closeH}:${minute}`;
+        const deconArray = deconstructTime(hours[day]);
+        deconArray[slot] = `0${newTime}`.slice(-2);
+        hours[day] = `${deconArray[0]}:${deconArray[1]}-${deconArray[2]}:${deconArray[3]}`;
         setOpeningTime(hours);
     }
 
     const handleSubmit = (e: FormEvent<HTMLElement>) => {
         e.preventDefault();
         console.log("submit");
-        manageService.addBusiness({
+        manageService.addRestaurant({
             name,
             address,
             opening_time: openingTime,
@@ -79,10 +58,11 @@ function ManageAddPanel() {
             delivery,
             takeaway,
             menus,
-            location
+            location: {lat: parseFloat(location.lat), lng: parseFloat(location.lng)}
         })
             .then(res => {
                 console.log(res);
+                handleAddRestaurant(res)
             })
             .catch(err => {
                 console.log(err);
@@ -102,24 +82,40 @@ function ManageAddPanel() {
                     onChange={(e)=>setAddress(e.target.value)} />
             </div><hr/>
             <div className="form-group">
+                <label htmlFor="restaurantAddress"><h5>Restaurant Location:</h5></label>
+                <div className="form-inline" id="restaurantAddress">
+                    <label htmlFor="restaurantLatitude">Latitude:</label>
+                    <input type="number" className="form-control" id="restaurantLatitude" placeholder="Latitude"
+                        value={location.lat}
+                        onChange={(e)=>setLocation({lat: e.target.value, lng: location.lng})} />
+                    <label htmlFor="restaurantLongitude">Longitude:</label>
+                    <input type="number" className="form-control" id="restaurantLongitude" placeholder="Longitude"
+                        value={location.lng}
+                        onChange={(e)=>setLocation({lat: location.lat, lng: e.target.value})} />
+                </div>
+            </div><hr/>
+            <div className="form-group">
                 <label htmlFor="openTime"><h5>Opening Time:</h5></label>
                 <div id="openTime">
                     {days.map((s, d) => (
                         <div key={s}>
-                            <div className="form-inline">
-                                <label htmlFor={`${s}-ch`}>{s}:</label>
-                                <input type="number" className="form-control" id={`${s}-ch`}
+                            <div className="form-row">
+                                <label htmlFor={`${s}-ch`} className="col-1">{s}:</label>
+                                <input type="number" className="form-control col-1" id={`${s}-ch`}
                                     min={0} max={23} step={1} value={deconstructTime(openingTime[d])[0]}
-                                    onChange={(e)=>handleOpenHour(d, e.target.value)} />
-                                <input type="number" className="form-control" id={`${s}-om`}
+                                    onChange={(e)=>handleOpenTime(d, e.target.value, 0)} />
+                                <label htmlFor={`${s}-om`} className="mx-1">:</label>
+                                <input type="number" className="form-control col-1" id={`${s}-om`}
                                     min={0} max={59} step={1} value={deconstructTime(openingTime[d])[1]}
-                                    onChange={(e)=>handleOpenMin(d, e.target.value)} />
-                                <input type="number" className="form-control" id={`${s}-ch`}
+                                    onChange={(e)=>handleOpenTime(d, e.target.value, 1)} />
+                                <label htmlFor={`${s}-ch`} className="mx-1">to</label>
+                                <input type="number" className="form-control col-1" id={`${s}-ch`}
                                     min={0} max={23} step={1} value={deconstructTime(openingTime[d])[2]}
-                                    onChange={(e)=>handleCloseHour(d, e.target.value)} />
-                                <input type="number" className="form-control" id={`${s}-cm`}
+                                    onChange={(e)=>handleOpenTime(d, e.target.value, 2)} />
+                                <label htmlFor={`${s}-cm`} className="mx-1">:</label>
+                                <input type="number" className="form-control col-1" id={`${s}-cm`}
                                     min={0} max={59} step={1} value={deconstructTime(openingTime[d])[3]}
-                                    onChange={(e)=>handleCloseMin(d, e.target.value)} />
+                                    onChange={(e)=>handleOpenTime(d, e.target.value, 3)} />
                             </div>
                         </div>
                     ))}
@@ -145,4 +141,4 @@ function ManageAddPanel() {
     )
 }
     
-export default ManageAddPanel;
+export default ManageAddRestaurantPanel;

@@ -1,12 +1,15 @@
 import mongoose, { Document } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 
+import { restaurantType } from "../types";
+import { restaurantObj } from "./businessObj";
+
 
 interface UserDocument extends Document {
     username: String,
     name: String,
-    passwordHash: String;
-    business: mongoose.Schema.Types.ObjectId[];
+    passwordHash?: String;
+    restaurants: restaurantType[];
 }
 const userSchema = new mongoose.Schema({
     username: {
@@ -22,18 +25,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    business: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Business"
-    }]
+    restaurants: [restaurantObj]
 });
 userSchema.plugin(uniqueValidator);
 userSchema.set("toJSON", {
-    transform: (document: Document, returnedObject: Document) => {
+    transform: (document: Document, returnedObject: UserDocument) => {
         returnedObject.id = returnedObject._id.toString();
         delete returnedObject._id;
         delete returnedObject.__v;
-        // delete returnedObject.passwordHash;
+        delete returnedObject.passwordHash;
     }
 });
 const User = mongoose.model<UserDocument>("User", userSchema);

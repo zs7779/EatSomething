@@ -61,3 +61,9 @@ export interface restaurantType {
     rating?: number;
     user_ratings_total?: number;
 }
+
+export interface managerType {
+    username: string;
+    name: string;
+    restaurants: restaurantType[];
+}

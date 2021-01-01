@@ -1,15 +1,25 @@
 import axios from 'axios';
 
-import {restaurantType} from '../utils/types';
+import { restaurantType } from '../utils/types';
 import loginService from './loginService';
 
 
-const baseUrl = 'http://localhost:3001/api/business';
+const baseUrl = 'http://localhost:3001/api/manage';
 
-const addBusiness = async (businessInfo: restaurantType) => {
-  const response = await axios.post(baseUrl, businessInfo, {
+const addRestaurant = async (businessInfo: restaurantType) => {
+  const response = await axios.post(`${baseUrl}/restaurants`, businessInfo, {
     headers: {
-        Authorization: loginService.getToken(),
+        Authorization: `bearer ${loginService.getToken()}`,
+        "Content-type": "application/json"
+    }
+  });
+  return response.data;
+}
+
+const getManager = async () => {
+  const response = await axios.get(baseUrl, {
+    headers: {
+        Authorization: `bearer ${loginService.getToken()}`,
         "Content-type": "application/json"
     }
   });
@@ -17,4 +27,4 @@ const addBusiness = async (businessInfo: restaurantType) => {
 }
 
 
-export default { addBusiness };
+export default { addRestaurant, getManager };

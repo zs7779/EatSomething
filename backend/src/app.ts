@@ -3,12 +3,10 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 
-import Business from "./models/business";
-import userRouter from "./controllers/user";
 import loginRouter from "./controllers/login";
 import registerRouter from "./controllers/register";
-import businessRouter from "./controllers/business";
-import { businessType } from './types';
+import manageRouter from "./controllers/manage";
+
 
 dotenv.config();
 
@@ -32,21 +30,20 @@ app.use(requestLogger);
 
 app.use('/api/register', registerRouter);
 app.use('/api/login', loginRouter);
-app.use('/api/user', userRouter);
-app.use('/api/business', businessRouter);
+app.use('/api/manage', manageRouter);
 
-app.post('/api/order', (request: Request, response: Response) => {
-    Business.find({}).then(res => {
-        // mongoose.connection.close();
-        response.json(res);
-    })
-});
+// app.post('/api/order', (request: Request, response: Response) => {
+//     Business.find({}).then(res => {
+//         // mongoose.connection.close();
+//         response.json(res);
+//     })
+// });
 
-app.get('/api/order', (request: Request, response: Response) => {
-    Business.find({}).then(res => {
-        response.json(res);
-    })
-});
+// app.get('/api/order', (request: Request, response: Response) => {
+//     Business.find({}).then(res => {
+//         response.json(res);
+//     })
+// });
 
 const PORT = 3001
 app.listen(PORT, () => {
