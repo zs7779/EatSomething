@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, Router } from "express";
 
 import User from "../models/user";
-import { restaurantType } from "../types";
+import Restaurant from "../models/restaurant";
 import { getTokenFromRequest } from "../utils";
 
 
@@ -22,6 +22,7 @@ manageRouter.get('/', async (request: Request, response: Response) => {
         return response.status(401).json({ error: 'Token invalid' });
     }
     User.findById(decodedToken.id)
+        .populate("restaurants")
         .then(user => {
             if (user) {
                 response.json(user);
@@ -50,7 +51,8 @@ manageRouter.post('/restaurants', async (request: Request, response: Response) =
     }
     const body = request.body;
 
-    const newBusiness = {
+    const newRestaurant = new Restaurant({
+        manager: user._id,
         name: body.name,
         address: body.address,
         opening_time: body.opening_time,
@@ -63,33 +65,27 @@ manageRouter.post('/restaurants', async (request: Request, response: Response) =
         price_level: 3,
         rating: 0,
         user_ratings_total: 0,
-    };
-    
-    user.restaurants.push(newBusiness as restaurantType);
-    user.save().then(res => {
-        response.json(user);
-    })
+    });
+    newRestaurant.save()
+        .then(() => {
+            user.restaurants.push(newRestaurant._id);
+            user.save().then(res => {
+                res.populate("restaurants", (err) => {
+                    if (err) {
+                        return response.status(500).json({ error: err.message });
+                    } else {
+                        return response.json(res);
+                    }
+                });
+            })
+                .catch(err => {
+                    return response.status(500).json({ error: err.message });
+                });
+        })
         .catch(err => {
             return response.status(500).json({ error: err.message });
         });
+
 });
-
-// businessRouter.get('/api/business/:id', (request: Request, response: Response) => {
-//     const id = request.params.id;
-//     Business.findById(id)
-//         .then(res => {
-//             response.json(res);
-//         })
-//         .catch(error => {
-//             console.log(error);
-//             response.status(500).end();
-//         });
-// });
-
-// businessRouter.get('/', (request: Request, response: Response) => {
-//     Business.find({}).then(res => {
-//         response.json(res);
-//     })
-// });
 
 export default manageRouter;

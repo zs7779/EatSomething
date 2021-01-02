@@ -1,18 +1,19 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, Router } from "express";
 
-import User from "../models/user";
 import { restaurantType } from "../types";
 import { getTokenFromRequest } from "../utils";
+import Restaurant from '../models/restaurant';
 
 
 const restaurantRouter = Router();
 
 restaurantRouter.get('/', async (request: Request, response: Response) => {
-    User.aggregate([{$unwind: "$restaurants"}])
-        .then(users => {
-            console.log(users);
-            response.json(users);
+    Restaurant.find()
+        .then(restaurants => {
+            console.log(restaurants);
+            
+            response.json(restaurants);
         })
         .catch(err => {
             return response.status(500).json({ error: err.message });

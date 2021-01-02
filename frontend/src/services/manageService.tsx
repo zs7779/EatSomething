@@ -26,5 +26,4 @@ const getManager = async () => {
   return response.data;
 }
 
-
 export default { addRestaurant, getManager };

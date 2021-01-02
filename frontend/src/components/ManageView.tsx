@@ -23,7 +23,7 @@ function ManageView() {
     const handleAddRestaurant = (updatedManager: managerType) => {
         setManager(updatedManager);
         setAdding(false);
-    }
+    }    
     
     return (
         <div className="business-view p-3">

@@ -8,7 +8,7 @@ function ManagePanel({restaurants}: {restaurants: restaurantType[]}) {
     return (
         <div className="d-flex flex-wrap">
             {restaurants.map((restaurant) => (
-                <div key={restaurant.name} className="card manage-restaurant-card m-2">
+                <div key={restaurant.id} className="card manage-restaurant-card m-2">
                     <div className="card-body">
                         <h5 className="card-title">{restaurant.name}</h5>
                         <div className="card-text">{restaurant.address}</div>

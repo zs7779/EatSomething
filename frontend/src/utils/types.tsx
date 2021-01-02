@@ -46,6 +46,7 @@ export interface orderItemType {
 }
 
 export interface restaurantType {
+    id?: string;
     name: string;
     address: string;
     opening_time: string[];

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
-import { mapQueryType, mapLocationType } from '../utils/types';
+import { mapQueryType, mapLocationType, restaurantType } from '../utils/types';
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
+import restaurantService from '../services/restaurantService';
 import '../css/MapPanel.css';
 
 
@@ -89,18 +90,18 @@ const business = {
     user_ratings_total: 296, //generate
 };
 
-const base_url = "http://localhost:3001";
-
 function MapPanel({keyword, location, address} : mapQueryType) {
+    const [ restaurants, setRestaurants ] = useState<restaurantType[]>([]);
     const [ oldKeyword, setKeyword ] = useState(keyword);
     const [ oldLocation, setLocation ] = useState(location);
     const mapElement = document.getElementById("map");
 
     useEffect(() => {
-        axios.get(`${base_url}/api/restaurant/`).then((res) => {
-            console.log(res.data);
-            // setBusiness(res.data);
-        })
+        restaurantService.getAllRestaurants()
+            .then((res) => {
+                console.log(res);
+                setRestaurants(res);
+            })
             .catch(err => {
                 console.log(err.response.data.error);
             });
@@ -139,15 +140,15 @@ function MapPanel({keyword, location, address} : mapQueryType) {
         <div className="map-panel">
             <div id="searchResult">
                 <ul className="list-group">
-                    {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19].map(n => 
-                    <li key={n} className="list-group-item info-card p-0">
-                        <Link to={"/place/"+n}><div className="p-3">
-                            <h6>{business.name}</h6>
-                            <RatingStar rating={business.rating} className="small text-muted"/>
-                            <small className="text-muted">({business.user_ratings_total})</small> · <PriceSign priceLevel={business.price_level} className="small text-muted"/><br/>
-                            <small className="text-muted">{business.types.join(" · ")}</small><br/>
-                            <small className="text-muted">{business.address}</small><br/>
-                            <OpenUntil openingTime={business.opening_time} className="small text-muted"/><br/>
+                    {restaurants.map(restaurant => 
+                    <li key={restaurant.id} className="list-group-item info-card p-0">
+                        <Link to={`/place/${restaurant.id}`}><div className="p-3">
+                            <h6>{restaurant.name}</h6>
+                            <RatingStar rating={restaurant.rating as number} className="small text-muted"/>
+                            <small className="text-muted">({restaurant.user_ratings_total})</small> · <PriceSign priceLevel={restaurant.price_level as number} className="small text-muted"/><br/>
+                            <small className="text-muted">{restaurant.keywords.join(" · ")}</small><br/>
+                            <small className="text-muted">{restaurant.address}</small><br/>
+                            <OpenUntil openingTime={restaurant.opening_time} className="small text-muted"/><br/>
                         </div></Link>
                     </li>)}
                 </ul>
