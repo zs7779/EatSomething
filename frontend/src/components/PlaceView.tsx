@@ -7,22 +7,22 @@ import MenuPanel from "./MenuPanel";
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
 import { orderItemType } from '../utils/types';
 import { orderChange } from '../reducers/orderReducer';
+import restaurantService from '../services/restaurantService';
 import '../css/PlaceView.css';
 
 
-const base_url = "http://localhost:3001";
-
 function PlaceView() {
-    const [ business, setBusiness ] = useState<any>();
+    const [ restaurant, setRestaurant ] = useState<any>();
     const { placeID }: { placeID:string } = useParams();
     const order = useSelector((state: {modal:DefaultRootState, order:DefaultRootState}) => state.order as orderItemType[]);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        axios.get(`${base_url}/api/restaurant/${placeID}/`).then((res) => {
-            // console.log(res.data);
-            setBusiness(res.data);
-        })
+        restaurantService.getRestaurant(placeID)
+            .then((res) => {
+                // console.log(res);
+                setRestaurant(res);
+            })
             .catch(err => {
                 console.log(err.response.data.error);
             });
@@ -53,15 +53,15 @@ function PlaceView() {
     return (
     <div className="place-view">
         <div></div>
-        {business && <div className="place-info p-3">
-            <h1 className="font-weight-bold">{business.name} {placeID}</h1>
+        {restaurant && <div className="place-info p-3">
+            <h1 className="font-weight-bold">{restaurant.name}</h1>
             <div className="font-weight-bold">
-                <RatingStar rating={business.rating}/> <span>{business.user_ratings_total} reviews</span> · <PriceSign priceLevel={business.price_level}/> · <span>{business.keywords.join(" · ")}</span>
+                <RatingStar rating={restaurant.rating}/> <span>{restaurant.user_ratings_total} reviews</span> · <PriceSign priceLevel={restaurant.price_level}/> · <span>{restaurant    .keywords.join(" · ")}</span>
             </div>
             <hr/>
-            <MenuPanel menu={business.menus}></MenuPanel>
+            <MenuPanel menu={restaurant.menus}></MenuPanel>
         </div>}
-        {business && <div className="booking-info p-3">
+        {restaurant && <div className="booking-info p-3">
             <div className="card card-body shadow-sm rounded">
                 <h5>Order</h5>
                 <div>
@@ -78,9 +78,9 @@ function PlaceView() {
                 <hr/>
                 <div className="d-flex justify-content-center">
                     {/* {business.dine_in && <button type="button" onClick={handleShow} className="btn btn-danger mx-1">Dine-in</button>} */}
-                    {business.takeaway && <button type="button" onClick={handleShow} disabled={order.length === 0}
+                    {restaurant.takeaway && <button type="button" onClick={handleShow} disabled={order.length === 0}
                         className="btn btn-danger px-4 mx-1">Takeout</button>}
-                    {business.delivery && <button type="button" onClick={handleShow} disabled={order.length === 0}
+                    {restaurant.delivery && <button type="button" onClick={handleShow} disabled={order.length === 0}
                         className="btn btn-danger px-4 mx-1">Delivery</button>}
                 </div>
             </div>
@@ -88,15 +88,13 @@ function PlaceView() {
                 <h5>Info</h5>
                 <div className="embedmap p-1" style={{height: "200px", backgroundColor: "green"}}></div>
                 <div className="font-weight-bold mt-3">Location</div>
-                <div>{business.address}</div>
+                <div>{restaurant.address}</div>
                 <div className="font-weight-bold mt-3">Hours of Operation</div>
-                <div><OpenUntil openingTime={business.opening_time}/></div>
+                <div><OpenUntil openingTime={restaurant.opening_time}/></div>
                 <div className="font-weight-bold mt-3">Cuisine</div>
-                <div>{business.keywords.join(", ")}</div>
+                <div>{restaurant.keywords.join(", ")}</div>
                 <div className="font-weight-bold mt-3">Payment Options</div>
-                <div>{business.payment.join(", ")}</div>
-                <div className="font-weight-bold mt-3">Parking</div>
-                <div>{business.parking.join(", ")}</div>
+                <div>{restaurant.payment.join(", ")}</div>
             </div>
         </div>}
     </div>

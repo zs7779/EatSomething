@@ -70,26 +70,6 @@ function searchNearby(map: google.maps.Map, service: google.maps.places.PlacesSe
     );
 }
 
-const business = {
-    name: "Pizza Pizza", // .name
-    address: "8601 Warden Ave Unit #1B, Unionville", //.vicinity
-    location: {lat: 43.8579871, lng: -79.3319334}, //geometry?.location
-    opening_time: ["09:00-21:30",
-                   "09:00-21:30",
-                   "09:00-21:30",
-                   "09:00-21:30",
-                   "09:00-21:30",
-                   "09:00-22:00",
-                   "09:00-22:00"], //generate
-    types: ["Pizza", "Italian", "Fast food"], //generate
-    dine_in: true, //generate
-    takeaway: true, //generate
-    delivery: true, //generate
-    price_level: 2, //generate
-    rating: 3.6, //generate
-    user_ratings_total: 296, //generate
-};
-
 function MapPanel({keyword, location, address} : mapQueryType) {
     const [ restaurants, setRestaurants ] = useState<restaurantType[]>([]);
     const [ oldKeyword, setKeyword ] = useState(keyword);

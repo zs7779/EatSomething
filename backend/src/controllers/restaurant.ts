@@ -11,8 +11,6 @@ const restaurantRouter = Router();
 restaurantRouter.get('/', async (request: Request, response: Response) => {
     Restaurant.find()
         .then(restaurants => {
-            console.log(restaurants);
-            
             response.json(restaurants);
         })
         .catch(err => {
@@ -20,6 +18,17 @@ restaurantRouter.get('/', async (request: Request, response: Response) => {
         });
 });
 
+restaurantRouter.get('/:id', async (request: Request, response: Response) => {
+    const id = request.params.id;
+    Restaurant.findById(id)
+        .then(restaurant => {
+            console.log(restaurant);
+            response.json(restaurant);
+        })
+        .catch(err => {
+            return response.status(500).json({ error: err.message });
+        });
+});
 
 // restaurantRouter.post('/restaurants', async (request: Request, response: Response) => {
 //     const token = getTokenFromRequest(request);
