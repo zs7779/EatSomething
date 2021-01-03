@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import axios from 'axios';
 
 import { mapQueryType, mapLocationType, restaurantType } from '../utils/types';
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';

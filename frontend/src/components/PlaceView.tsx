@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
-import axios from 'axios';
 
 import MenuPanel from "./MenuPanel";
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';

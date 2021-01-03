@@ -43,13 +43,13 @@ function name() {
     randomName.push(lastNames[Math.floor(Math.random() * lastNames.length)]);
     return randomName.join(" ").replace(/\s\s+/g, ' ').trim();
 }
-function address() {
-    const addrObj = JSON.parse(addrLines[Math.floor(Math.random() * addrLines.length)]);
+function address(rand_index) {
+    const addrObj = JSON.parse(addrLines[rand_index]);
     return `${addrObj.properties.number} ${addrObj.properties.street}, ${addrObj.properties.city}`;
 }
-function location() {
-    const addrObj = JSON.parse(addrLines[Math.floor(Math.random() * addrLines.length)]);
-    return {lat: addrObj.geometry.coordinates[0], lng: addrObj.geometry.coordinates[1]};
+function location(rand_index) {
+    const addrObj = JSON.parse(addrLines[rand_index]);
+    return {lat: addrObj.geometry.coordinates[1], lng: addrObj.geometry.coordinates[0]};
 }
 function opening_time() {
     if (Math.random() < 0.1) {
@@ -132,6 +132,7 @@ function menu(mainKey="") {
         "mozzarella", "basil", "spinach", "oilves", "red onions", "goat cheese", "penna sauce", "dried fruits", "kiwi", "curry", "mixed herbs", "coconut shavings",
         "chocolate", "coleslaw", "French Fries", "Chef's signiture dressing", "cajun mayo", "sesame oil"];
     
+    const restaurantPriceStyle = Math.random() > 0.5 ? 0.99 : 0; //$0.99 style or not
     const randomMenus = [];
     const randomMenuInt = Math.floor(Math.random() * 4) + 1; // 1 to 4 menus
     const randomMenuKey = menuKey.sort(() => 0.5 - Math.random());
@@ -141,49 +142,134 @@ function menu(mainKey="") {
             items: []
         };
         const randomItemInt = Math.floor(Math.random() * 5) + 4; // number of items on a menu range between 4 to 8
-        const randomBasePrice = Math.floor(Math.random() * 27) + 3 + (Math.random() > 0.5 ? 0.5 : 0) + (Math.random() > 0.5 ? 0.99 : 0); // random + $0.99
+        const randomBasePrice = Math.floor(Math.random() * 27) + 3 + (Math.random() > 0.5 ? 0.5 : 0) + restaurantPriceStyle;
         for ( let i = 0; i < randomItemInt ; i++ ) {
             if (["Drinks", "Wine", "Beer"].includes(randomMenu.name)) {
                 const randomAdjs = adjective[randomMenu.name].sort(() => 0.5 - Math.random()).slice(0, 1); // 1 to 4 adjectives
-                randomMenu.items.push({
-                    name: [...randomAdjs].join(" "),
-                    description: "",
-                    price: `$${(randomBasePrice + Math.floor(Math.random() * 16)).toFixed(2)}` // add $0 to $15 to base price
-                });
+                const randomItemName = [...randomAdjs].join(" ");
+                if (!randomMenu.items.map(m=>m.name).includes(randomItemName))
+                    randomMenu.items.push({
+                        name: randomItemName,
+                        description: "",
+                        price: `${(randomBasePrice + Math.floor(Math.random() * 16)).toFixed(2)}` // add $0 to $15 to base price
+                    });
             } else {
                 const randomAdjs = adjective[randomMenu.name].sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 3) + 1); // 1 to 3 adjectives
                 const randomSubj = substantive[randomMenu.name].sort(() => 0.5 - Math.random()).slice(0, 1); // at most 1 substantive
                 const randomIngredients = ingredients.sort(() => 0.5 - Math.random()); // 2 to 9 random ingredients
-                randomMenu.items.push({
-                    name: [...randomAdjs, ...randomSubj].join(" "),
-                    description: randomIngredients.slice(0, Math.floor(Math.random() * 6) + 2).join(", ").concat(`, and ${randomIngredients[randomIngredients.length-1]}`),
-                    price: `$${(randomBasePrice + Math.floor(Math.random() * 16)).toFixed(2)}` // add $0 to $15 to base price
-                });
+                const randomItemName = [...randomAdjs, ...randomSubj].join(" ");
+                if (!randomMenu.items.map(m=>m.name).includes(randomItemName))
+                    randomMenu.items.push({
+                        name: randomItemName,
+                        description: randomIngredients.slice(0, Math.floor(Math.random() * 6) + 2).join(", ").concat(`, and ${randomIngredients[randomIngredients.length-1]}`),
+                        price: `${(randomBasePrice + Math.floor(Math.random() * 16)).toFixed(2)}` // add $0 to $15 to base price
+                    });
             }
         }
-        randomMenus.push(randomMenu);
+        randomMenus.push(randomMenu); // menu names are guranteed to be unique because they were popped from an array
     }
     
     return randomMenus;
 }
 
-function makeNewBusiness() {
+bcrypt = require('bcrypt');
+mongoose = require('mongoose');
+dotenv = require('dotenv');
+dotenv.config();
+
+const dbname = "gofood";
+const url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.7mie9.mongodb.net/${dbname}?retryWrites=true&w=majority`;
+
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+    .then(result => {    console.log('connected to MongoDB')  })
+    .catch((error) => {    console.log('error connecting to MongoDB:', error.message)  });
+
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    email: {
+        type: String,
+        required: true,
+    },
+    passwordHash: {
+        type: String,
+        required: true,
+    },
+    restaurants: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Restaurant"
+    }]
+});
+const User = mongoose.model("User", userSchema);
+const menuItemObj = {
+    name: String,
+    description: String,
+    price: Number
+};
+const menuObj = {
+    name: String,
+    items: [menuItemObj]
+};
+const restaurantSchema = new mongoose.Schema({
+    manager: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    name: String,
+    address: String,
+    opening_time: [String],
+    keywords: [String],
+    takeaway: Boolean,
+    delivery: Boolean,
+    payment: [String],
+    menus: [menuObj],
+    location: { lat: Number, lng: Number },
+    price_level: Number,
+    rating: Number,
+    user_ratings_total: Number
+});
+const Restaurant = mongoose.model("Restaurant", restaurantSchema);
+
+
+function makeNewBusiness(userid) {
+    const rand_index = Math.floor(Math.random() * addrLines.length);
     const business = {
+        manager: userid,
         name: name(),
-        address: address(),
-        location: location(),
+        address: address(rand_index),
+        location: location(rand_index),
         opening_time: opening_time(),
         keywords: keywords(),
-        dine_in: Math.random() < 0.5 ? true : false,
+        // dine_in: Math.random() < 0.5 ? true : false,
         takeaway: Math.random() < 0.9 ? true : false,
         delivery: Math.random() < 0.5 ? true : false,
         price_level: Math.floor(Math.random() * 5) + 1, // range between 1 to 5
         rating: (Math.floor(Math.random() * 30) + 20) / 10, // range between 2.0 to 4.9
         user_ratings_total: Math.floor(Math.random() * 2000), // range between 0 to 1999
-        parking: parking(),
+        // parking: parking(),
         payment: payment(),
         menus: menu()
     };
-    console.log(business);
+    return business;
 }
-makeNewBusiness();
+
+function makeNewUser() {
+    const users = ["Harry", "Ron", "Hermione", "Luna", "Draco", "Neville", "Fred", "George", "Ginny"];
+    users.forEach(async (name) => {
+        const passwordHash = await bcrypt.hash(name, 10);
+        const user = new User({
+            username: name,
+            email: `${name}@${name}.com`,
+            passwordHash
+        });
+        for (let i=0; i<10; i++) {
+            const restaurant = new Restaurant(makeNewBusiness(user._id));
+            restaurant.save().catch(err=>console.log(err));;
+            user.restaurants.push(restaurant);
+        }
+        user.save().catch(err=>console.log(err));
+        console.log(user.username);
+    });
+}
+
+makeNewUser();
