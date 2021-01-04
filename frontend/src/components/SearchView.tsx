@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from "react-router-dom";
+
 import { useQuery } from '../utils/hooks';
 import { mapLocationType } from '../utils/types';
 import SearchPanel from './SearchPanel';

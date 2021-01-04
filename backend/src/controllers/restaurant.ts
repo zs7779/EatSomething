@@ -18,6 +18,36 @@ restaurantRouter.get('/', async (request: Request, response: Response) => {
         });
 });
 
+restaurantRouter.get('/location/:location/query/:keywords?', async (request: Request, response: Response) => {
+    const keywords = new RegExp(request.params.keywords ?
+        request.params.keywords.trim().replace(/\s+/g, ' ').split(' ').join('|') :
+        "", 'i');
+    const location = request.params.location.split(',');
+    console.log(keywords);
+    console.log(parseFloat(location[0]), parseFloat(location[1]));
+    
+    Restaurant.find({$or:[
+            {keywords: keywords},
+            {name: keywords}
+        ],
+        "location.lat": {
+            $gte: parseFloat(location[0])-0.02,
+            $lte: parseFloat(location[0])+0.02,
+        },
+        "location.lng": {
+            $gte: parseFloat(location[1])-0.02,
+            $lte: parseFloat(location[1])+0.02,
+        },
+        })
+        .then(restaurants => {
+            console.log(restaurants.length);
+            response.json(restaurants);
+        })
+        .catch(err => {
+            return response.status(500).json({ error: err.message });
+        });
+});
+
 restaurantRouter.get('/:id', async (request: Request, response: Response) => {
     const id = request.params.id;
     Restaurant.findById(id)

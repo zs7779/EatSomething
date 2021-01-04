@@ -76,15 +76,17 @@ function MapPanel({keyword, location, address} : mapQueryType) {
     const mapElement = document.getElementById("map");
 
     useEffect(() => {
-        restaurantService.getAllRestaurants()
-            .then((res) => {
-                console.log(res);
-                setRestaurants(res);
-            })
-            .catch(err => {
-                console.log(err.response.data.error);
-            });
-    }, [keyword]);
+        if (location !== undefined) {
+            restaurantService.searchRestaurantByKeywords(`${location.lat},${location.lng}`, keyword)
+                .then((res) => {
+                    console.log(res);
+                    setRestaurants(res);
+                })
+                .catch(err => {
+                    console.log(err.response.data.error);
+                });
+        }
+    }, [location, keyword]);
 
     // useEffect(() => {
     //     if (mapElement) {
@@ -127,6 +129,7 @@ function MapPanel({keyword, location, address} : mapQueryType) {
                             <small className="text-muted">({restaurant.user_ratings_total})</small> · <PriceSign priceLevel={restaurant.price_level as number} className="small text-muted"/><br/>
                             <small className="text-muted">{restaurant.keywords.join(" · ")}</small><br/>
                             <small className="text-muted">{restaurant.address}</small><br/>
+                            <small>{restaurant.location.lat},{restaurant.location.lng}</small><br/>
                             <OpenUntil openingTime={restaurant.opening_time} className="small text-muted"/><br/>
                         </div></Link>
                     </li>)}

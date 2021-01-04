@@ -16,12 +16,17 @@ const getAllRestaurants = async () => {
 }
 
 const getRestaurant = async (id: string) => {
-    const response = await axios.get(`${baseUrl}/${id}`, {
-        headers: {
-            "Content-type": "application/json"
-        }
-      });
-      return response.data;
+  const response = await axios.get(`${baseUrl}/${id}`, {
+      headers: {
+          "Content-type": "application/json"
+      }
+    });
+    return response.data;
 }
 
-export default { getAllRestaurants, getRestaurant };
+const searchRestaurantByKeywords = async (location: string, keywords: string) => {
+  const response = await axios.get(`${baseUrl}/location/${location}/query/${keywords}`);
+  return response.data;
+}
+
+export default { getAllRestaurants, getRestaurant, searchRestaurantByKeywords };
