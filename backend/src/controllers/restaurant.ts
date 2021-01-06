@@ -28,15 +28,16 @@ restaurantRouter.get('/location/:location/query/:keywords?', async (request: Req
     
     Restaurant.find({$or:[
             {keywords: keywords},
-            {name: keywords}
+            {name: keywords},
+            {"menus.items.name": keywords}
         ],
         "location.lat": {
-            $gte: parseFloat(location[0])-0.02,
-            $lte: parseFloat(location[0])+0.02,
+            $gte: parseFloat(location[0])-0.05,
+            $lte: parseFloat(location[0])+0.05,
         },
         "location.lng": {
-            $gte: parseFloat(location[1])-0.02,
-            $lte: parseFloat(location[1])+0.02,
+            $gte: parseFloat(location[1])-0.05,
+            $lte: parseFloat(location[1])+0.05,
         },
         })
         .then(restaurants => {

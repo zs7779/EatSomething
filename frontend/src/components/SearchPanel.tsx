@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { searchQueryType, locationType } from '../utils/types';
 import '../css/SearchPanel.css';
@@ -9,6 +9,12 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
     const [ location, setLocation ] = useState(lastLocation || "");
     const history = useHistory();
     
+    useEffect(() => {
+        if (lastLocation) {
+            setLocation(lastLocation);
+        }
+    }, [lastLocation]);
+
     const searchCurrentLocation = (): void => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((loc: locationType): void => {

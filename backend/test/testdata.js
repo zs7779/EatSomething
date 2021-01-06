@@ -16,9 +16,11 @@ var fs = require('fs');
 // });
 
 
-const inputFile = 'ca_on_city_of_markham-addresses-city.geojson';
-const addrData = fs.readFileSync(inputFile, 'utf8');
-const addrLines = addrData.split("\n");
+const inputFile1 = 'ca_on_city_of_markham-addresses-city.geojson';
+const addrData1 = fs.readFileSync(inputFile1, 'utf8');
+const inputFile2 = 'ca_on_city_of_toronto-addresses-city.geojson';
+const addrData2 = fs.readFileSync(inputFile2, 'utf8');
+const addrLines = addrData1.split("\n").concat(addrData2.split("\n"));
 console.log("Data size", addrLines.length);
 
 // const sampleSize = 5;
@@ -262,7 +264,7 @@ function makeNewUser() {
             email: `${name}@${name}.com`,
             passwordHash
         });
-        for (let i=0; i<10; i++) {
+        for (let i=0; i<100; i++) {
             const restaurant = new Restaurant(makeNewBusiness(user._id));
             restaurant.save().catch(err=>console.log(err));;
             user.restaurants.push(restaurant);

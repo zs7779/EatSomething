@@ -7,17 +7,22 @@ import restaurantService from '../services/restaurantService';
 import '../css/MapPanel.css';
 
 
-function searchGeocodeAddress(
+// function searchNearby(map: google.maps.Map, restaurants: restaurantType[]) {
+//     const readyListener = google.maps.event.addListener(map, 'idle', function () {
+//         restaurants.map(restaurant => new google.maps.Marker({
+//             position: restaurant.location,
+//             map,
+//             title: restaurant.name,
+//         }));
+//         google.maps.event.removeListener(readyListener);
+//     });
+// }
+
+function geocodeAddress(
     map: google.maps.Map,
-    service: google.maps.places.PlacesService,
-    keyword: string,
     location?: mapLocationType,
     address?: string,
 ): void {
-    const readyListener = google.maps.event.addListener(map, 'idle', function () {
-        searchNearby(map, service, keyword)
-        google.maps.event.removeListener(readyListener);
-    });
     if (location) {
         // If location given, do not use geocode
         map.setCenter(location);
@@ -27,14 +32,12 @@ function searchGeocodeAddress(
         const mapCenter = map.getCenter();
         const searchBounds = mapCenter ? new google.maps.LatLngBounds(
             {lat: mapCenter.lat()-1, lng: mapCenter.lng()-1}, {lat: mapCenter.lat()+1, lng: mapCenter.lng()+1}) : undefined;
-        
         // Geocode service
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address: address, bounds: searchBounds }, (results, status) => {
             console.log("Geocode", status);
             if (status === "OK") {
                 map.setCenter(results[0].geometry.location);
-                // map.fitBounds(results[0].geometry.bounds);
                 map.setZoom(13);
             }
         });
@@ -43,44 +46,51 @@ function searchGeocodeAddress(
     }
 }
 
-function searchNearby(map: google.maps.Map, service: google.maps.places.PlacesService,
-                      keyword: string) {
-    const query: google.maps.places.PlaceSearchRequest = {
-        location: map.getCenter(),
-        bounds: map.getBounds() || undefined,
-        type: 'restaurant', keyword: keyword
-    };
-    // Search nearby
-    service.nearbySearch(
-        query,
-        (results, status) => {
-            console.log("NearbySearch", status);
-            if (status !== "OK") return;
-            
-            results
-                .filter(restaurant => restaurant.geometry && restaurant.name)
-                .map(restaurant => new google.maps.Marker({
-                        position: restaurant?.geometry?.location,
-                        map,
-                        title: restaurant.name,
-                    })
-                )
-        }
-    );
-}
-
-function MapPanel({keyword, location, address} : mapQueryType) {
+function MapPanel({keyword, location, address, setLocation} : mapQueryType) {
+    const [ oldKeyword, setOldKeyword ] = useState("");
+    const [ oldLocation, setOldLocation ] = useState<mapLocationType>();
+    const [ map, setMap ] = useState<google.maps.Map>();
     const [ restaurants, setRestaurants ] = useState<restaurantType[]>([]);
-    const [ oldKeyword, setKeyword ] = useState(keyword);
-    const [ oldLocation, setLocation ] = useState(location);
     const mapElement = document.getElementById("map");
 
     useEffect(() => {
-        if (location !== undefined) {
+        if (mapElement && keyword !== oldKeyword) {
+            const newMap = new google.maps.Map(mapElement, {
+                center: location,
+                zoom: 13,
+            });
+            const readyListener = google.maps.event.addListener(newMap, 'idle', function () {
+                // only works when the first time the map becomes idle
+                geocodeAddress(newMap, location, address);
+                google.maps.event.removeListener(readyListener);
+            });
+            google.maps.event.addListener(newMap, 'center_changed', function () {
+                // Everytime map center change
+                const newCenter = newMap.getCenter().toJSON();
+                setLocation(newCenter);
+            });
+            restaurants.map(restaurant => {
+                return new google.maps.Marker({
+                    position: restaurant.location,
+                    map: newMap,
+                    title: restaurant.name,
+                });
+            });
+            setMap(newMap);
+        }
+    }, [mapElement, restaurants]);
+
+    // queryLocation to directly query location, queryAddress geocoded to location coordinates
+    // search restaurants at location
+    useEffect(() => {
+        if (location && (keyword !== oldKeyword || oldLocation === undefined)) {
+            console.log(`${location.lat},${location.lng}`, keyword);
             restaurantService.searchRestaurantByKeywords(`${location.lat},${location.lng}`, keyword)
                 .then((res) => {
                     console.log(res);
                     setRestaurants(res);
+                    setOldKeyword(keyword);
+                    setOldLocation(location);
                 })
                 .catch(err => {
                     console.log(err.response.data.error);
@@ -91,31 +101,29 @@ function MapPanel({keyword, location, address} : mapQueryType) {
     // useEffect(() => {
     //     if (mapElement) {
     //         const map = new google.maps.Map(mapElement, {
-    //             center: oldLocation,
+    //             center: location,
     //             zoom: 13,
     //         });
+    //         const markers = restaurants.map(restaurant => {
+    //             return new google.maps.Marker({
+    //                 position: restaurant.location,
+    //                 map,
+    //                 title: restaurant.name,
+    //             });
+    //         });
+    //         console.log(markers);
+            
     //         google.maps.event.addListener(map, 'center_changed', function () {
     //             // Everytime map center change
     //             const newCenter = map.getCenter();
-    //             setLocation(newCenter.toJSON());
+    //             setLocation(newCenter.toJSON());// this resets location so it rerenders!!!!!!!!!!!!!!!
     //         });
-    //         const service = new google.maps.places.PlacesService(map);
-    //         if (keyword !== oldKeyword) {
-    //             console.log("keyword change");
-    //             const readyListener = google.maps.event.addListener(map, 'idle', function () {
-    //                 searchNearby(map, service, keyword);
-    //                 google.maps.event.removeListener(readyListener);
-    //             });    
-    //         } else {
-    //             console.log("other change");
-    //             const readyListener = google.maps.event.addListener(map, 'idle', function () {
-    //                 searchGeocodeAddress(map, service, keyword, location, address)
-    //                 google.maps.event.removeListener(readyListener);
-    //             });
-    //         }
-    //         setKeyword(keyword);
+    //         const readyListener = google.maps.event.addListener(map, 'idle', function () {
+    //             geocodeAddress(map, location, address);
+    //             google.maps.event.removeListener(readyListener);
+    //         });
     //     }
-    // }, [keyword, location, address, mapElement]);
+    // }, [restaurants, address, mapElement]);
 
     return (
         <div className="map-panel">
@@ -139,7 +147,6 @@ function MapPanel({keyword, location, address} : mapQueryType) {
         </div>
     );
 }
-
 
 
 export default MapPanel;
