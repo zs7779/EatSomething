@@ -1,22 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { renderToString } from 'react-dom/server';
+import { Link, useHistory } from "react-router-dom";
 
 import { mapLocationType, restaurantType } from '../utils/types';
-import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
+import PlaceInfoCard from './PlaceInfoCard';
 import restaurantService from '../services/restaurantService';
 import '../css/MapPanel.css';
 
-
-// function searchNearby(map: google.maps.Map, restaurants: restaurantType[]) {
-//     const readyListener = google.maps.event.addListener(map, 'idle', function () {
-//         restaurants.map(restaurant => new google.maps.Marker({
-//             position: restaurant.location,
-//             map,
-//             title: restaurant.name,
-//         }));
-//         google.maps.event.removeListener(readyListener);
-//     });
-// }
 
 function geocodeAddress(
     map: google.maps.Map,
@@ -48,6 +38,7 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
     const [ oldLocation, setOldLocation ] = useState({});
     const [ map, setMap ] = useState<google.maps.Map>();
     const [ restaurants, setRestaurants ] = useState<restaurantType[]>([]);
+    const history = useHistory();
     const mapElement = document.getElementById("map");
 
     useEffect(() => {
@@ -62,10 +53,24 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
                 setLocation(newCenter);
             });
             restaurants.map(restaurant => {
-                return new google.maps.Marker({
+                const newMarker = new google.maps.Marker({
                     position: restaurant.location,
                     map: newMap,
                     title: restaurant.name,
+                });
+                const infowindow = new google.maps.InfoWindow({
+                    content: "",
+                });
+                newMarker.addListener("mouseover", () => {
+                    const content = renderToString((<PlaceInfoCard restaurant={restaurant} />));
+                    infowindow.setContent(content);
+                    infowindow.open(newMap, newMarker);
+                });
+                newMarker.addListener("mouseout", () => {
+                    infowindow.close();
+                });
+                newMarker.addListener("click", () => {
+                    history.push(`${restaurantService.routeToRestaurant(restaurant.id)}`);
                 });
             });
             setMap(newMap);
@@ -78,16 +83,13 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
         }
     }, [map, locationQuery, address]);
 
-    // queryLocation to directly query location, queryAddress geocoded to location coordinates
     // search restaurants at location
     useEffect(() => {        
         if (location) {
             if (keyword === oldKeyword && location === oldLocation) return;
-            console.log(keyword, location);
             
             restaurantService.searchRestaurantByKeywords(`${location.lat},${location.lng}`, keyword)
                 .then((res) => {
-                    console.log(res);
                     setRestaurants(res);
                     setOldKeyword(keyword);
                     setOldLocation(location);
@@ -104,15 +106,9 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
                 <ul className="list-group">
                     {restaurants.map(restaurant => 
                     <li key={restaurant.id} className="list-group-item info-card p-0">
-                        <Link to={`/place/${restaurant.id}`}><div className="p-3">
-                            <h6>{restaurant.name}</h6>
-                            <RatingStar rating={restaurant.rating as number} className="small text-muted"/>
-                            <small className="text-muted">({restaurant.user_ratings_total})</small> · <PriceSign priceLevel={restaurant.price_level as number} className="small text-muted"/><br/>
-                            <small className="text-muted">{restaurant.keywords.join(" · ")}</small><br/>
-                            <small className="text-muted">{restaurant.address}</small><br/>
-                            <small>{restaurant.location.lat},{restaurant.location.lng}</small><br/>
-                            <OpenUntil openingTime={restaurant.opening_time} className="small text-muted"/><br/>
-                        </div></Link>
+                        <Link to={restaurantService.routeToRestaurant(restaurant.id)}>
+                            <PlaceInfoCard restaurant={restaurant} />
+                        </Link>
                     </li>)}
                 </ul>
             </div>

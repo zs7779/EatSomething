@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
+
+import searchService from '../services/searchService';
 import { searchQueryType, locationType } from '../utils/types';
 import '../css/SearchPanel.css';
 
@@ -18,7 +20,7 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
     const searchCurrentLocation = (): void => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((loc: locationType): void => {
-                history.push(`/search?q=${query}&near=${loc.coords.latitude},${loc.coords.longitude}`);
+                history.push(searchService.routeToSearch(query, `${loc.coords.latitude},${loc.coords.longitude}`));
             }, () => {
                 console.log("An error occured. Cannot find your location.");    
             });
@@ -39,7 +41,7 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
         if (location === "") {
             searchCurrentLocation();
         } else {
-            history.push(`/search?q=${query}&near=${location}`);
+            history.push(searchService.routeToSearch(query, `${location}`));
         }
     }
 

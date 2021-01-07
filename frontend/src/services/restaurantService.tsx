@@ -4,10 +4,11 @@ import { restaurantType } from '../utils/types';
 import loginService from './loginService';
 
 
-const baseUrl = 'http://localhost:3001/api/restaurant';
+const frontendURL = '/place';
+const backendURL = 'http://localhost:3001/api/restaurant';
 
 const getAllRestaurants = async () => {
-  const response = await axios.get(baseUrl, {
+  const response = await axios.get(backendURL, {
     headers: {
         "Content-type": "application/json"
     }
@@ -16,7 +17,7 @@ const getAllRestaurants = async () => {
 }
 
 const getRestaurant = async (id: string) => {
-  const response = await axios.get(`${baseUrl}/${id}`, {
+  const response = await axios.get(`${backendURL}/${id}`, {
       headers: {
           "Content-type": "application/json"
       }
@@ -25,8 +26,12 @@ const getRestaurant = async (id: string) => {
 }
 
 const searchRestaurantByKeywords = async (location: string, keywords: string) => {
-  const response = await axios.get(`${baseUrl}/location/${location}/query/${keywords}`);
+  const response = await axios.get(`${backendURL}/location/${location}/query/${keywords}`);
   return response.data;
 }
 
-export default { getAllRestaurants, getRestaurant, searchRestaurantByKeywords };
+const routeToRestaurant = (id?: string) => {
+  return `${frontendURL}/${id}`;
+}
+
+export default { getAllRestaurants, getRestaurant, searchRestaurantByKeywords, routeToRestaurant };
