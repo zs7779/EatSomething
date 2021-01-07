@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-import { mapQueryType, mapLocationType, restaurantType } from '../utils/types';
+import { mapLocationType, restaurantType } from '../utils/types';
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
 import restaurantService from '../services/restaurantService';
 import '../css/MapPanel.css';
@@ -46,9 +46,15 @@ function geocodeAddress(
     }
 }
 
-function MapPanel({keyword, location, address, setLocation} : mapQueryType) {
+function MapPanel({keyword, location, locationQuery, address, setLocation} : {
+    keyword: string,
+    location?: mapLocationType,
+    locationQuery?: string,
+    address?: string,
+    setLocation: (arg0: mapLocationType)=>void;
+}) {
     const [ oldKeyword, setOldKeyword ] = useState("");
-    const [ oldLocation, setOldLocation ] = useState<mapLocationType>();
+    const [ oldLocation, setOldLocation ] = useState("");
     const [ map, setMap ] = useState<google.maps.Map>();
     const [ restaurants, setRestaurants ] = useState<restaurantType[]>([]);
     const mapElement = document.getElementById("map");
@@ -83,20 +89,19 @@ function MapPanel({keyword, location, address, setLocation} : mapQueryType) {
     // queryLocation to directly query location, queryAddress geocoded to location coordinates
     // search restaurants at location
     useEffect(() => {
-        if (location && (keyword !== oldKeyword || oldLocation === undefined)) {
-            console.log(`${location.lat},${location.lng}`, keyword);
-            restaurantService.searchRestaurantByKeywords(`${location.lat},${location.lng}`, keyword)
+        if (locationQuery && (keyword !== oldKeyword || locationQuery !== oldLocation)) {
+            restaurantService.searchRestaurantByKeywords(locationQuery, keyword)
                 .then((res) => {
                     console.log(res);
                     setRestaurants(res);
                     setOldKeyword(keyword);
-                    setOldLocation(location);
+                    setOldLocation(locationQuery);
                 })
                 .catch(err => {
                     console.log(err.response.data.error);
                 });
         }
-    }, [location, keyword]);
+    }, [locationQuery, keyword]);
 
     // useEffect(() => {
     //     if (mapElement) {

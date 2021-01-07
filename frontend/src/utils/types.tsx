@@ -22,13 +22,6 @@ export interface mapLocationType {
     lng: number;
 }
 
-export interface mapQueryType {
-    keyword: string;
-    location?: mapLocationType;
-    address?: string;
-    setLocation: (arg0: mapLocationType)=>void;
-}
-
 export interface menuItemType {
     name: string;
     description: string;
