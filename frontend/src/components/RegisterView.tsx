@@ -1,9 +1,8 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
+import registerService from '../services/registerService';
 
-const base_url = "http://localhost:3001";
 
 function RegisterView() {
     const [username, setUsername] = useState("");
@@ -24,20 +23,12 @@ function RegisterView() {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         
-        axios.post(`${base_url}/api/register`, {
-            username,
-            email,
-            password
-        }, {
-            headers: {
-                "Content-type": "application/json"
-            }
-        }).then(res => {
-            console.log(res);
-            setRedirect(true);
-        }).catch(err => {
-            console.log(err.response.data.error);
-        })
+        registerService.registerAccount(username, email, password)
+            .then(res => {
+                setRedirect(true);
+            }).catch(err => {
+                console.log(err.response.data.error);
+            });
     }
     if (redirect) {
         return <Redirect to="/login"/>

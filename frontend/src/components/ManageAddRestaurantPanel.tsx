@@ -48,7 +48,6 @@ function ManageAddRestaurantPanel({handleAddRestaurant}: {handleAddRestaurant: (
 
     const handleSubmit = (e: FormEvent<HTMLElement>) => {
         e.preventDefault();
-        console.log("submit");
         manageService.addRestaurant({
             name,
             address,
@@ -61,11 +60,10 @@ function ManageAddRestaurantPanel({handleAddRestaurant}: {handleAddRestaurant: (
             location: {lat: parseFloat(location.lat), lng: parseFloat(location.lng)}
         })
             .then(res => {
-                console.log(res);
-                handleAddRestaurant(res)
+                handleAddRestaurant(res);
             })
             .catch(err => {
-                console.log(err);
+                console.log(err.response.data.error);
             });
     }
 

@@ -17,9 +17,7 @@ const logout = () => {
   window.localStorage.removeItem('logintoken');
 }
 
-const storeToken = (token: string) => { 
-  console.log(token);
-  
+const storeToken = (token: string) => {   
   window.localStorage.setItem('logintoken', token);  
 }
 

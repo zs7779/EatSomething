@@ -24,7 +24,6 @@ function LoginView({setLoginToken}: {setLoginToken: (arg0: string)=>void}) {
             loginService.storeToken(res.token);
             setLoginToken(res.token);
         }).catch(err => {
-            console.log(err);
             console.log(err.response.data.error);
         })
     }

@@ -20,7 +20,6 @@ function geocodeAddress(
     // Geocode service
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ address: address, bounds: searchBounds }, (results, status) => {
-        console.log("Geocode", status);
         if (status === "OK") {
             setLocation(results[0].geometry.location.toJSON());
         }

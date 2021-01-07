@@ -19,7 +19,6 @@ function PlaceView() {
     useEffect(() => {
         restaurantService.getRestaurant(placeID)
             .then((res) => {
-                // console.log(res);
                 setRestaurant(res);
             })
             .catch(err => {
