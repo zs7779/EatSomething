@@ -14,14 +14,14 @@ function SearchView() {
 
     const [ location, setLocation ] = useState<mapLocationType>(); // location is used in actual query and controls map center
     const [ locationQuery, setLocationQuery ] = useState<string>();
-    const [ address, setAddress ] = useState<string>(); // address is used to geocode incase the location query cannot be interpreted as coordinates
+    const [ address, setAddress ] = useState<string>(""); // address is used to geocode incase the location query cannot be interpreted as coordinates
     
     useEffect(() => {
         if (queryNear) {
             if (queryNear.match(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/)) {
                 setLocation({lat: parseFloat(queryNear.split(",")[0]), lng: parseFloat(queryNear.split(",")[1])});
                 setLocationQuery(queryNear);
-                setAddress(undefined);
+                setAddress("");
             } else {
                 setAddress(queryNear);
                 setLocation(undefined);
@@ -37,8 +37,8 @@ function SearchView() {
             <SearchPanel lastQuery={keyword} lastLocation={location ? `${location.lat.toFixed(4)},${location.lng.toFixed(4)}` : address} />
             <MapPanel keyword={keyword}
                 location={location ? location : undefined}
-                locationQuery={locationQuery ? locationQuery : undefined}
-                address={location ? undefined : address}
+                locationQuery={locationQuery ? locationQuery : ""}
+                address={location ? "" : address}
                 setLocation={setLocation}
             />
         </div>
