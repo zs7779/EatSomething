@@ -1,8 +1,6 @@
-import {menuItemObj} from "./menuItemObj";
-
-
 const orderItemObj = {
-    item: menuItemObj,
+    name: String,
+    price: Number,
     quantity: Number
 };
 

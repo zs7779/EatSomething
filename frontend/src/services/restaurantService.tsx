@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { restaurantType } from '../utils/types';
+import { orderItemType, restaurantType } from '../utils/types';
 import loginService from './loginService';
 
 
@@ -30,8 +30,20 @@ const searchRestaurantByKeywords = async (location: string, keywords: string) =>
   return response.data;
 }
 
+const placeOrderAtRestaurant = async (id: string, order: orderItemType[]) => {
+  console.log(id, order);
+  const response = await axios.post(`${backendURL}/${id}`, order,
+  {
+    headers: {
+        Authorization: `bearer ${loginService.getToken()}`,
+        "Content-type": "application/json"
+    }
+  });
+  return response.data;
+}
+
 const routeToRestaurant = (id?: string) => {
   return `${frontendURL}/${id}`;
 }
 
-export default { getAllRestaurants, getRestaurant, searchRestaurantByKeywords, routeToRestaurant };
+export default { getAllRestaurants, getRestaurant, searchRestaurantByKeywords, placeOrderAtRestaurant, routeToRestaurant };

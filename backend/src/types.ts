@@ -30,3 +30,7 @@ export interface restaurantType {
     payment: String[];
     menus: menuSectionType[];    
 }
+
+export interface jwtType {
+    id: string;
+}

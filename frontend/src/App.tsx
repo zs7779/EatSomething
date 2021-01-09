@@ -9,7 +9,7 @@ import RegisterView from './components/RegisterView';
 import SearchPanel from './components/SearchPanel';
 import SearchView from './components/SearchView';
 import PlaceView from './components/PlaceView';
-import ConfirmationView from './components/ConfirmationView';
+import OrderView from './components/OrderView';
 import ManageView from './components/ManageView';
 import loginService from './services/loginService';
 import LogoutView from './components/LogoutView';
@@ -27,7 +27,7 @@ function App() {
             <Link to="/" className="mx-1">home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/confirmation" className="mx-1">confirmation</Link>
+            <Link to="/order" className="mx-1">order</Link>
           </li>
         </ul>
         {loginToken ? <ul className="nav">
@@ -57,8 +57,8 @@ function App() {
           <Route path="/search">
             <SearchView />
           </Route>
-          <Route path="/confirmation">
-            <ConfirmationView />
+          <Route path="/order/:orderID">
+            <OrderView />
           </Route>
           <Route path="/register">
             <RegisterView />

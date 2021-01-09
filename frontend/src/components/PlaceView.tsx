@@ -1,20 +1,22 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
 
 import MenuPanel from "./MenuPanel";
 import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
-import { orderItemType } from '../utils/types';
-import { orderChange } from '../reducers/orderReducer';
+import { orderItemType, restaurantType } from '../utils/types';
+import { orderChange, orderClear } from '../reducers/orderReducer';
 import restaurantService from '../services/restaurantService';
+import orderService from '../services/orderService';
 import '../css/PlaceView.css';
 
 
 function PlaceView() {
-    const [ restaurant, setRestaurant ] = useState<any>();
+    const [ restaurant, setRestaurant ] = useState<restaurantType>();
     const { placeID }: { placeID:string } = useParams();
     const order = useSelector((state: {modal:DefaultRootState, order:DefaultRootState}) => state.order as orderItemType[]);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     useEffect(() => {
         restaurantService.getRestaurant(placeID)
@@ -28,6 +30,18 @@ function PlaceView() {
 
     const handleShow = () => {
         console.log("book");
+        console.log(order);
+        if (restaurant && restaurant.id) {
+            restaurantService.placeOrderAtRestaurant(restaurant.id, order)
+                .then(res => {
+                    console.log(res);
+                    dispatch(orderClear());
+                    history.push(orderService.routeToConfirmation(res.id));
+                })
+                .catch(err => {
+                    console.log(err.response.data.error);
+                });
+        }
     };
 
     const itemPrice = (item: orderItemType) => item.price * item.quantity;
@@ -54,7 +68,7 @@ function PlaceView() {
         {restaurant && <div className="place-info p-3">
             <h1 className="font-weight-bold">{restaurant.name}</h1>
             <div className="font-weight-bold">
-                <RatingStar rating={restaurant.rating}/> <span>{restaurant.user_ratings_total} reviews</span> · <PriceSign priceLevel={restaurant.price_level}/> · <span>{restaurant    .keywords.join(" · ")}</span>
+                {restaurant.rating && <RatingStar rating={restaurant.rating}/>} <span>{restaurant.user_ratings_total} reviews</span> · {restaurant.price_level && <PriceSign priceLevel={restaurant.price_level}/>} · <span>{restaurant.keywords.join(" · ")}</span>
             </div>
             <hr/>
             <MenuPanel menu={restaurant.menus}></MenuPanel>

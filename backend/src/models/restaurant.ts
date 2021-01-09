@@ -3,7 +3,7 @@ import { menuObj } from "./menuObj";
 
 
 const restaurantSchema = new mongoose.Schema({
-    manager: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     name: String,
     address: String,
     opening_time: [String],

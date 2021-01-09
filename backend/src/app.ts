@@ -7,6 +7,7 @@ import loginRouter from "./controllers/login";
 import registerRouter from "./controllers/register";
 import manageRouter from "./controllers/manage";
 import restaurantRouter from "./controllers/restaurant";
+import orderRouter from "./controllers/order";
 
 
 dotenv.config();
@@ -32,20 +33,8 @@ app.use(requestLogger);
 app.use('/api/register', registerRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/manage', manageRouter);
-app.use('/api/restaurant/', restaurantRouter);
-
-// app.post('/api/order', (request: Request, response: Response) => {
-//     Business.find({}).then(res => {
-//         // mongoose.connection.close();
-//         response.json(res);
-//     })
-// });
-
-// app.get('/api/order', (request: Request, response: Response) => {
-//     Business.find({}).then(res => {
-//         response.json(res);
-//     })
-// });
+app.use('/api/restaurant', restaurantRouter);
+app.use('/api/order', orderRouter);
 
 const PORT = 3001
 app.listen(PORT, () => {

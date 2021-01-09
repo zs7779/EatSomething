@@ -3,7 +3,11 @@ import {orderItemObj} from "./orderItemObj";
 
 
 const orderSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    restaurant: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' },
     items: [orderItemObj],
+    createTime: { type: Date, default: Date.now },
+    complete: { type: Boolean, default: false },
 });
 orderSchema.set("toJSON", {
     transform: (document: Document, returnedObject: Document) => {

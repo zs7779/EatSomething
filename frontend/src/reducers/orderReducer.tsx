@@ -16,7 +16,9 @@ const orderReducer = (state:orderItemType[]=[], action: orderActionType) => {
                     return state.map(item => item.name === action.data?.name ? action.data : item);
                 }
             }
-                
+        case "ORDER_CLEAR":
+            console.log("ORDER_LCEAR");
+            return [];
         default:
             return state;
     }
@@ -26,7 +28,13 @@ export const orderChange = (item:orderItemType) => {
     return {
         type: "ORDER_FOOD",
         data: item,
-    }
+    };
+}
+
+export const orderClear = () => {
+    return {
+        type: "ORDER_CLEAR",
+    };
 }
 
 export default orderReducer;
