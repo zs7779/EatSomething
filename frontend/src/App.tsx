@@ -57,7 +57,7 @@ function App() {
           <Route path="/search">
             <SearchView />
           </Route>
-          <Route path="/order/:orderID">
+          <Route path="/order/:orderID?">
             <OrderView />
           </Route>
           <Route path="/register">
@@ -66,7 +66,7 @@ function App() {
           <Route path="/login">
             {loginToken ? <Redirect to="/manage"/> : <LoginView setLoginToken={setLoginToken}/>}
           </Route>
-          <Route path="/manage">
+          <Route path="/manage/:placeID?">
             {loginToken ? <ManageView /> : <Redirect to="/login"/>}
           </Route>
           <Route path="/logout">

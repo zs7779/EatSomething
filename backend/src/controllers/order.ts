@@ -25,6 +25,7 @@ orderRouter.get('/', async (request: Request, response: Response) => {
                 return response.status(404).json({ error: 'User not found' });
             }
             Order.find({user: user._id})
+                .sort({createTime: -1})
                 .populate("restaurant")
                 .then(res => {
                     return response.json(res);

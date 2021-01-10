@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { managerType } from '../utils/types';
 import ManagePanel from "./ManagePanel";
@@ -10,20 +11,34 @@ import '../css/ManageView.css';
 function ManageView() {
     const [ manager, setManager ] = useState<managerType>({username: "", name: "", restaurants:[]} as managerType);
     const [ adding, setAdding ] = useState(false);
+    const { placeID }: { placeID:string } = useParams();
+    console.log(placeID);
+    
     useEffect(()=>{
-        manageService.getManager()
-            .then(res => {
-                setManager(res);
-            })
-            .catch(err => {
-                console.log(err.response.data.error);
-            })
-    }, [])
+        if (placeID) {
+            manageService.getManager(placeID)
+                .then(res => {
+                    setManager(res);
+                })
+                .catch(err => {
+                    console.log(err.response.data.error);
+                });
+        } else {
+            manageService.getManager()
+                .then(res => {
+                    setManager(res);
+                })
+                .catch(err => {
+                    console.log(err.response.data.error);
+                });
+        }
+        
+    }, [placeID]);
 
     const handleAddRestaurant = (updatedManager: managerType) => {
         setManager(updatedManager);
         setAdding(false);
-    }    
+    }
     
     return (
         <div className="business-view p-3">

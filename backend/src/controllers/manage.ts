@@ -19,7 +19,7 @@ manageRouter.get('/', async (request: Request, response: Response) => {
         return response.status(401).json({ error: 'Token invalid' });
     }
     User.findById(decodedToken.id)
-        .populate("restaurants")
+        .populate("restaurants", ["name", "address"])
         .then(user => {
             if (user) {
                 response.json(user);
@@ -32,6 +32,32 @@ manageRouter.get('/', async (request: Request, response: Response) => {
         });
 });
 
+manageRouter.get('/restaurants/:id', async (request: Request, response: Response) => {
+    const token = getTokenFromRequest(request);
+    if (!token) {
+        return response.status(401).json({ error: 'Token missing' });    
+    } 
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: 'Token invalid' });
+    }
+    const id = request.params.id;
+    User.findById(decodedToken.id)
+        .populate({
+            path: "restaurants",
+            match: {_id: id}
+        })
+        .then(user => {
+            if (user) {
+                response.json(user);
+            } else {
+                return response.status(404).json({ error: 'Cannot find user with specified ID' });
+            }
+        })
+        .catch(err => {
+            return response.status(500).json({ error: err.message });
+        });
+});
 
 manageRouter.post('/restaurants', async (request: Request, response: Response) => {
     const token = getTokenFromRequest(request);
