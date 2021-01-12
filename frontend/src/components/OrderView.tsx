@@ -2,27 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 import orderService from '../services/orderService';
+import { orderBEType } from '../utils/types';
 import '../css/OrderView.css';
+import OrderInfoCard from './OrderInfoCard';
 
-
-interface orderItemBEType {
-    _id: string;
-    name: string;
-    price: number;
-    quantity: number;
-}
-interface orderBEType {
-    id: string;
-    createTime: Date,
-    restaurant: {name: string},
-    items: orderItemBEType[]
-}
-
-const totalPrice = (order: orderBEType) => {
-    return order.items.reduce((prevValue: number, currItem: orderItemBEType) => {
-        return prevValue + currItem.quantity * currItem.price;
-    }, 0).toFixed(2);
-}
 
 function OrderView() {
     const [ order, setOrder ] = useState<orderBEType>();
@@ -55,28 +38,15 @@ function OrderView() {
     
     
     return (
-        <div className="order-card-parent">
+        <div className="order-view">
             {order ?
-            <div className="order-card">
+            <div className="order-panel">
                 <div className="card">
-                    <div className="card-body">
-                        <h4>Your order is confirmed!</h4>
-                        <hr/>
-                        <h5 className="card-title">{order.restaurant.name}</h5>
-                        {order.items.map(item => {
-                            return (
-                                <div key={item._id}>
-                                    <span>{item.name}</span> x <span>{item.quantity}</span> : <span>${item.price * item.quantity}</span>
-                                </div>
-                            );
-                        })}
-                        <hr/>
-                        <span>Total: ${totalPrice(order)}</span>
-                    </div>
+                    <OrderInfoCard order={order} title={"Your order is confirmed!"} footer={`Total: $${orderService.totalPrice(order)}`} />
                 </div>
             </div> :
-            <div className="order-card-parent">
-                <div className="order-card">
+            <div className="order-view">
+                <div className="order-panel">
                     <div className="card">
                         <h4>Order history</h4>
                         {allOrders.map(o => (
@@ -86,9 +56,9 @@ function OrderView() {
                                     <div className="card-title">{o.restaurant.name}</div>
                                     <div className="d-flex justify-content-between">
                                         <small className="small text-muted">{new Date(o.createTime).toDateString()}</small>
-                                        <small className="small">Total: ${totalPrice(o)}</small>
+                                        <small className="small">Total: ${orderService.totalPrice(o)}</small>
                                     </div>
-                                </div>      
+                                </div>
                             </div></Link>
                         ))}
                     </div>

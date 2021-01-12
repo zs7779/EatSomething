@@ -17,9 +17,19 @@ const addRestaurant = async (businessInfo: restaurantType) => {
   return response.data;
 }
 
-const getManager = async (restaurantID?: string) => {
+const manageRestaurant = async (restaurantID?: string) => {
   const path = restaurantID ? `${backendURL}/restaurants/${restaurantID}` : backendURL;
   const response = await axios.get(path, {
+    headers: {
+        Authorization: `bearer ${loginService.getToken()}`,
+        "Content-type": "application/json"
+    }
+  });
+  return response.data;
+}
+
+const restaurantOrders = async (restaurantID: string) => {
+  const response = await axios.get(`${backendURL}/restaurants/${restaurantID}/orders`, {
     headers: {
         Authorization: `bearer ${loginService.getToken()}`,
         "Content-type": "application/json"
@@ -32,4 +42,4 @@ const routeToRestaurant = (id?: string) => {
   return `${frontendURL}/${id}`;
 }
 
-export default { addRestaurant, getManager, routeToRestaurant };
+export default { addRestaurant, manageRestaurant, restaurantOrders, routeToRestaurant };

@@ -16,7 +16,7 @@ function ManageView() {
     
     useEffect(()=>{
         if (placeID) {
-            manageService.getManager(placeID)
+            manageService.manageRestaurant(placeID)
                 .then(res => {
                     setManager(res);
                 })
@@ -24,7 +24,7 @@ function ManageView() {
                     console.log(err.response.data.error);
                 });
         } else {
-            manageService.getManager()
+            manageService.manageRestaurant()
                 .then(res => {
                     setManager(res);
                 })

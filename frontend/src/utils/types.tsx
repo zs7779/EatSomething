@@ -62,3 +62,16 @@ export interface managerType {
     name: string;
     restaurants: restaurantType[];
 }
+
+export interface orderItemBEType {
+    _id: string;
+    name: string;
+    price: number;
+    quantity: number;
+}
+export interface orderBEType {
+    id: string;
+    createTime: Date,
+    restaurant: {name: string},
+    items: orderItemBEType[]
+}

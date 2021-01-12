@@ -32,7 +32,7 @@ orderRouter.get('/', async (request: Request, response: Response) => {
                 })
                 .catch(err => {
                     return response.status(500).json({ error: err.message });
-                })
+                });
         });
 });
 

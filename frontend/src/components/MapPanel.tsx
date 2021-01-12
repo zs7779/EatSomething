@@ -61,7 +61,7 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
                     content: "",
                 });
                 newMarker.addListener("mouseover", () => {
-                    const content = renderToString((<PlaceInfoCard restaurant={restaurant} />));
+                    const content = renderToString((<PlaceInfoCard restaurant={restaurant} verbose={false} />));
                     infowindow.setContent(content);
                     infowindow.open(newMap, newMarker);
                 });
@@ -106,7 +106,7 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
                     {restaurants.map(restaurant => 
                     <li key={restaurant.id} className="list-group-item info-card p-0">
                         <Link to={restaurantService.routeToRestaurant(restaurant.id)}>
-                            <PlaceInfoCard restaurant={restaurant} />
+                            <PlaceInfoCard restaurant={restaurant} verbose={false} />
                         </Link>
                     </li>)}
                 </ul>

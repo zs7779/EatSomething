@@ -5,6 +5,7 @@ import User from "../models/user";
 import Restaurant from "../models/restaurant";
 import { getTokenFromRequest } from "../utils";
 import { jwtType } from '../types';
+import Order from '../models/order';
 
 
 const manageRouter = Router();
@@ -53,6 +54,26 @@ manageRouter.get('/restaurants/:id', async (request: Request, response: Response
             } else {
                 return response.status(404).json({ error: 'Cannot find user with specified ID' });
             }
+        })
+        .catch(err => {
+            return response.status(500).json({ error: err.message });
+        });
+});
+
+manageRouter.get('/restaurants/:id/orders', async (request: Request, response: Response) => {
+    const token = getTokenFromRequest(request);
+    if (!token) {
+        return response.status(401).json({ error: 'Token missing' });    
+    } 
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: 'Token invalid' });
+    }
+    const id = request.params.id;
+    Order.find({restaurant: id})
+        .sort({createTime: -1})
+        .then(orders => {            
+            response.json(orders);
         })
         .catch(err => {
             return response.status(500).json({ error: err.message });

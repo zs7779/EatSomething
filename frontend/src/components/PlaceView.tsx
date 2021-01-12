@@ -9,6 +9,7 @@ import { orderChange, orderClear } from '../reducers/orderReducer';
 import restaurantService from '../services/restaurantService';
 import orderService from '../services/orderService';
 import '../css/PlaceView.css';
+import PlaceInfoCard from './PlaceInfoCard';
 
 
 function PlaceView() {
@@ -97,16 +98,7 @@ function PlaceView() {
                 </div>
             </div>
             <div className="card card-body shadow-sm mt-3">
-                <h5>Info</h5>
-                <div className="embedmap p-1" style={{height: "200px", backgroundColor: "green"}}></div>
-                <div className="font-weight-bold mt-3">Location</div>
-                <div>{restaurant.address}</div>
-                <div className="font-weight-bold mt-3">Hours of Operation</div>
-                <div><OpenUntil openingTime={restaurant.opening_time}/></div>
-                <div className="font-weight-bold mt-3">Cuisine</div>
-                <div>{restaurant.keywords.join(", ")}</div>
-                <div className="font-weight-bold mt-3">Payment Options</div>
-                <div>{restaurant.payment.join(", ")}</div>
+                <PlaceInfoCard restaurant={restaurant} verbose={true} />
             </div>
         </div>}
     </div>
