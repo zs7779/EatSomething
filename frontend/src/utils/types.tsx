@@ -72,6 +72,7 @@ export interface orderItemBEType {
 export interface orderBEType {
     id: string;
     createTime: Date,
-    restaurant: {name: string},
+    complete: boolean,
+    restaurant: {id: string, name: string},
     items: orderItemBEType[]
 }

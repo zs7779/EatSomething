@@ -12,7 +12,6 @@ function ManageView() {
     const [ manager, setManager ] = useState<managerType>({username: "", name: "", restaurants:[]} as managerType);
     const [ adding, setAdding ] = useState(false);
     const { placeID }: { placeID:string } = useParams();
-    console.log(placeID);
     
     useEffect(()=>{
         if (placeID) {

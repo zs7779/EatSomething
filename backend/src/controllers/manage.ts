@@ -70,10 +70,48 @@ manageRouter.get('/restaurants/:id/orders', async (request: Request, response: R
         return response.status(401).json({ error: 'Token invalid' });
     }
     const id = request.params.id;
-    Order.find({restaurant: id})
+    Order.find({restaurant: id, complete: false})
         .sort({createTime: -1})
+        .populate("restaurant", "_id name")
         .then(orders => {            
             response.json(orders);
+        })
+        .catch(err => {
+            return response.status(500).json({ error: err.message });
+        });
+});
+
+
+manageRouter.put('/restaurants/:rid/orders/:oid', async (request: Request, response: Response) => {
+    const token = getTokenFromRequest(request);
+    if (!token) {
+        return response.status(401).json({ error: 'Token missing' });    
+    } 
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: 'Token invalid' });
+    }
+    const rid = request.params.rid;
+    const oid = request.params.oid;
+    const body = request.body;
+    Order.findOne({_id: oid, restaurant: rid})
+        .then(order => {   
+            if (order) {
+                if (body.status === "complete") {    
+                    order.complete = true;                
+                    order.save()
+                    .then(res => {               
+                        return response.json(res);
+                    })
+                    .catch(err => {
+                        return response.status(500).json({ error: err.message });
+                    });
+                    return;
+                }
+                return response.status(400).json({ error: 'Unknown status' });
+            } else {
+                return response.status(404).json({ error: 'Cannot find this order' });
+            }
         })
         .catch(err => {
             return response.status(500).json({ error: err.message });
@@ -114,15 +152,16 @@ manageRouter.post('/restaurants', async (request: Request, response: Response) =
             newRestaurant.save()
                 .then(() => {
                     user.restaurants.push(newRestaurant._id);
-                    user.save().then(res => {
-                        res.populate("restaurants", (err) => {
-                            if (err) {
-                                return response.status(500).json({ error: err.message });
-                            } else {
-                                return response.json(res);
-                            }
-                        });
-                    })
+                    user.save()
+                        .then(res => {
+                            res.populate("restaurants", (err) => {
+                                if (err) {
+                                    return response.status(500).json({ error: err.message });
+                                } else {
+                                    return response.json(res);
+                                }
+                            });
+                        })
                         .catch(err => {
                             return response.status(500).json({ error: err.message });
                         });

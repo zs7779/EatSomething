@@ -1,7 +1,9 @@
 import mongoose, { Document } from "mongoose";
 import {orderItemObj} from "./orderItemObj";
 
-
+interface IOrder {
+    complete: Boolean;
+}
 const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     restaurant: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' },
@@ -16,7 +18,7 @@ orderSchema.set("toJSON", {
         delete returnedObject.__v;
     }
 });
-const Order = mongoose.model("Order", orderSchema);
+const Order = mongoose.model<IOrder & Document>("Order", orderSchema);
 
 export {orderSchema};
 export default Order;

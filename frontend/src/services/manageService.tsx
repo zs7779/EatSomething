@@ -38,8 +38,18 @@ const restaurantOrders = async (restaurantID: string) => {
   return response.data;
 }
 
+const updateOrderStatus = async (restaurantID: string, orderID: string, status: string) => {
+  const response = await axios.put(`${backendURL}/restaurants/${restaurantID}/orders/${orderID}`, {status}, {
+    headers: {
+        Authorization: `bearer ${loginService.getToken()}`,
+        "Content-type": "application/json"
+    }
+  });
+  return response.data;
+}
+
 const routeToRestaurant = (id?: string) => {
   return `${frontendURL}/${id}`;
 }
 
-export default { addRestaurant, manageRestaurant, restaurantOrders, routeToRestaurant };
+export default { addRestaurant, manageRestaurant, restaurantOrders, updateOrderStatus, routeToRestaurant };
