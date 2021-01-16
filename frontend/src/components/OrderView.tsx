@@ -23,9 +23,7 @@ function OrderView() {
                 });
         } else {
             orderService.getAllOrders()
-                .then(res => {
-                    console.log(res.data);
-                    
+                .then(res => {                    
                     setAllOrders(res.data);
                     setOrder(undefined);
                 })

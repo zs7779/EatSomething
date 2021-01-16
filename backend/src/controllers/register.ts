@@ -23,7 +23,6 @@ registerRouter.post('/', async (request, response) => {
             const savedUser = await user.save();
             response.json(savedUser);
         } catch (error) {
-            console.log(error);
             response.status(400).send({error: "Username already taken"});
         }
     }

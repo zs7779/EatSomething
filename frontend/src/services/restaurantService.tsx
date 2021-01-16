@@ -31,7 +31,6 @@ const searchRestaurantByKeywords = async (location: string, keywords: string) =>
 }
 
 const placeOrderAtRestaurant = async (id: string, order: orderItemType[]) => {
-  console.log(id, order);
   const response = await axios.post(`${backendURL}/${id}`, order,
   {
     headers: {

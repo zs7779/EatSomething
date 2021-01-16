@@ -6,7 +6,6 @@ const orderReducer = (state:orderItemType[]=[], action: orderActionType) => {
     switch(action.type) {
         case "ORDER_FOOD":
             // Pile everything up in one action?
-            console.log("ORDER_FOOD");
             if (state.filter(item => item.name === action.data?.name).length === 0) {
                 return state.concat(action.data as orderItemType);
             } else {
@@ -17,7 +16,6 @@ const orderReducer = (state:orderItemType[]=[], action: orderActionType) => {
                 }
             }
         case "ORDER_CLEAR":
-            console.log("ORDER_LCEAR");
             return [];
         default:
             return state;

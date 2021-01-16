@@ -15,8 +15,6 @@ const store = createStore(combineReducers({
     order: orderReducer,
 }));
 
-store.subscribe(() => console.log(store.getState()));
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

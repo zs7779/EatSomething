@@ -30,12 +30,9 @@ function PlaceView() {
     }, [placeID]);
 
     const handleShow = () => {
-        console.log("book");
-        console.log(order);
         if (restaurant && restaurant.id) {
             restaurantService.placeOrderAtRestaurant(restaurant.id, order)
                 .then(res => {
-                    console.log(res);
                     dispatch(orderClear());
                     history.push(orderService.routeToConfirmation(res.id));
                 })
@@ -57,8 +54,6 @@ function PlaceView() {
                     price: item.price,
                     quantity: parseInt(e.target.value),
                 } as orderItemType));
-            } else {
-                console.log("No item");
             }
         }
     };    

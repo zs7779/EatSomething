@@ -29,8 +29,6 @@ function OrderModal() {
                 price: item.price,
                 quantity: quantity,
             } as orderItemType));
-        } else {
-            console.log("No item");
         }
         dispatch(modalHide());
         setQuantity(1);

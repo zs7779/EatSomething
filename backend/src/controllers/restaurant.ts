@@ -85,13 +85,12 @@ restaurantRouter.post('/:id', async (request: Request, response: Response) => {
                         restaurant: restaurant._id,
                         items: body,
                     });
-                    console.log(body);
-                    
-                    console.log(newOrder);
                     
                     newOrder.save()
                         .then(res => response.json(res))
-                        .catch(err => console.log(err));
+                        .catch(err => {
+                            return response.status(500).json({ error: err.message });
+                        });;
                 });
         })
         .catch(err => {
