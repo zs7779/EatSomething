@@ -13,29 +13,30 @@ import OrderView from './components/OrderView';
 import ManageView from './components/ManageView';
 import loginService from './services/loginService';
 import LogoutView from './components/LogoutView';
+import './css/App.css';
 
 
 function App() {
   const [ loginToken, setLoginToken ] = useState<string|null>(loginService.getToken());
-  
+
   return (
     <div>
       <Router>
-      <header className="d-flex justify-content-between">
+      <header className="app-header d-flex justify-content-between">
         <ul className="nav">
           <li className="nav-item">
-            <Link to="/" className="mx-1">home</Link>
+            <Link to="/" className="mx-1">Home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/order" className="mx-1">order</Link>
+            <Link to="/order" className="mx-1">My Orders</Link>
           </li>
         </ul>
         {loginToken ? <ul className="nav">
           <li className="nav-item">
-            <Link to="/manage" className="mx-1">manage</Link>
+            <Link to="/manage" className="mx-1">My Restaurants</Link>
           </li>
           <li className="nav-item">
-            <Link to="/logout" className="mx-1">logout</Link>
+            <Link to="/logout" className="mx-1">Logout</Link>
           </li>
         </ul> : 
         <ul className="nav">

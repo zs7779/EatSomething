@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import searchService from '../services/searchService';
 import { searchQueryType, locationType } from '../utils/types';
@@ -10,6 +10,7 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
     const [ query, setQuery ] = useState(lastQuery || "");
     const [ location, setLocation ] = useState(lastLocation || "");
     const history = useHistory();
+    const path = useLocation();
     
     useEffect(() => {
         if (lastLocation) {
@@ -44,22 +45,27 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
             history.push(searchService.routeToSearch(query, `${location}`));
         }
     }
-
+    
     return (
-        <form className="form-inline justify-content-center">
-            <div>
-                <input type="text" name="search" value={query}
-                    placeholder="Restaurant or Cuisine" onChange={onQuery}
-                    className="form-control mx-2 input-box" size={50}
-                    required
-                />
-                <input type="text" name="location" value={location}
-                    placeholder="Location" onChange={onLocation}
-                    className="form-control mx-2 input-box" size={30}
-                />
-                <button className="btn btn-primary px-5 input-box" onClick={onSearch}>Go</button>
+        <div className={path.pathname === '/' ? "search-page" : ""}>
+            <div className={`d-flex flex-column align-items-center justify-content-center ${path.pathname === '/' && "search-panel"}`}>
+            {path.pathname === '/' && <h2 className="search-panel-title">Find your next meal here</h2>}
+            <form className="form-inline justify-content-center p-2">
+                <div>
+                    <input type="text" name="search" value={query}
+                        placeholder="Restaurant or Cuisine" onChange={onQuery}
+                        className="form-control mx-2 input-box" size={50}
+                        required
+                    />
+                    <input type="text" name="location" value={location}
+                        placeholder="Location" onChange={onLocation}
+                        className="form-control mx-2 input-box" size={30}
+                    />
+                    <button className="btn btn-primary px-5 input-box" onClick={onSearch}>Go</button>
+                </div>
+            </form>
             </div>
-        </form>
+        </div>
     )
 }
     
