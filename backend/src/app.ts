@@ -37,7 +37,7 @@ app.use('/api/manage', manageRouter);
 app.use('/api/restaurant', restaurantRouter);
 app.use('/api/order', orderRouter);
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 })
