@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import path from "path";
 
 import loginRouter from "./controllers/login";
 import registerRouter from "./controllers/register";
@@ -36,6 +37,9 @@ app.use('/api/login', loginRouter);
 app.use('/api/manage', manageRouter);
 app.use('/api/restaurant', restaurantRouter);
 app.use('/api/order', orderRouter);
+app.get("*", (request: Request, response: Response) => {
+    response.sendFile(path.resolve("./dist", "index.html"));
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
