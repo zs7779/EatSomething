@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const base_url = "http://localhost:3001/api/register";
+const base_url = "/api/register";
 
 const registerAccount = async (username: string, email: string, password: string) => {
     return await axios.post(`${base_url}/`, {

@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useSelector, useDispatch, DefaultRootState } from 'react-redux';
 
 import MenuPanel from "./MenuPanel";
-import { RatingStar, PriceSign, OpenUntil } from './miniComponents';
+import { RatingStar, PriceSign } from './miniComponents';
 import { orderItemType, restaurantType } from '../utils/types';
 import { orderChange, orderClear } from '../reducers/orderReducer';
 import restaurantService from '../services/restaurantService';

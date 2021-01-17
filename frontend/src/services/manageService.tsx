@@ -5,7 +5,7 @@ import loginService from './loginService';
 
 
 const frontendURL = '/manage';
-const backendURL = 'http://localhost:3001/api/manage';
+const backendURL = '/api/manage';
 
 const addRestaurant = async (businessInfo: restaurantType) => {
   const response = await axios.post(`${backendURL}/restaurants`, businessInfo, {

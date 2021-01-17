@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 
 import User from "../models/user";
 

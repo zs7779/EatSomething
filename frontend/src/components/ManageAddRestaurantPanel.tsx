@@ -2,7 +2,7 @@ import React, { FormEvent, useState } from 'react';
 
 import ManageAddList from './ManageAddList';
 import ManageAddMenu from './ManageAddMenu';
-import { managerType, menuType, } from '../utils/types';
+import { managerType, menuType } from '../utils/types';
 import manageService from '../services/manageService';
 
 

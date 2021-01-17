@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, Router } from "express";
 
-import { jwtType, restaurantType } from "../types";
+import { jwtType } from "../types";
 import { getTokenFromRequest } from "../utils";
 import User from '../models/user';
 import Restaurant from '../models/restaurant';

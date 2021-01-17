@@ -33,14 +33,12 @@ function OrderView() {
         }
     }, [orderID]);
 
-    
-    
     return (
         <div className="order-view">
             {order ?
             <div className="order-panel">
                 <div className="card">
-                    <OrderInfoCard order={order} title={"Your order is confirmed!"} footer={`Total: $${orderService.totalPrice(order)}`} />
+                    <OrderInfoCard order={order} title={`Your order is ${order.complete ? "completed" : "confirmed"}!`} footer={`Total: $${orderService.totalPrice(order)}`} />
                 </div>
             </div> :
             <div className="order-view">
@@ -51,7 +49,11 @@ function OrderView() {
                             <Link key={o.id} to={orderService.routeToConfirmation(o.id)}><div>
                                 <hr/>
                                 <div className="card-body">
-                                    <div className="card-title">{o.restaurant.name}</div>
+                                    <div className="card-title">
+                                        {o.restaurant.name}
+                                        {o.complete ? <span className="badge badge-primary float-right">Complete</span> : 
+                                        <span className="badge badge-secondary float-right">Imcomplete</span>}
+                                    </div>
                                     <div className="d-flex justify-content-between">
                                         <small className="small text-muted">{new Date(o.createTime).toDateString()}</small>
                                         <small className="small">Total: ${orderService.totalPrice(o)}</small>

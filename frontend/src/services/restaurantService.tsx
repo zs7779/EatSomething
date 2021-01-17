@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-import { orderItemType, restaurantType } from '../utils/types';
+import { orderItemType } from '../utils/types';
 import loginService from './loginService';
 
 
 const frontendURL = '/place';
-const backendURL = 'http://localhost:3001/api/restaurant';
+const backendURL = '/api/restaurant';
 
 const getAllRestaurants = async () => {
   const response = await axios.get(backendURL, {
