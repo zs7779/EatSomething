@@ -5,7 +5,7 @@ import { orderBEType, orderItemBEType } from '../utils/types';
 
 
 const frontendURL = '/order';
-const backendURL = 'http://localhost:3001/api/order';
+const backendURL = '/api/order';
 
 const getAllOrders = async () => {
     return await axios.get(`${backendURL}/`, {
