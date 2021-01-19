@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "https://zhaosean.com/dist/gofood/static/css/main.d58fa168.chunk.css",
-    "main.js": "https://zhaosean.com/dist/gofood/static/js/main.4ad0eab9.chunk.js",
-    "main.js.map": "https://zhaosean.com/dist/gofood/static/js/main.4ad0eab9.chunk.js.map",
-    "runtime-main.js": "https://zhaosean.com/dist/gofood/static/js/runtime-main.d1ac050d.js",
-    "runtime-main.js.map": "https://zhaosean.com/dist/gofood/static/js/runtime-main.d1ac050d.js.map",
-    "static/js/2.4eda7c0c.chunk.js": "https://zhaosean.com/dist/gofood/static/js/2.4eda7c0c.chunk.js",
-    "static/js/2.4eda7c0c.chunk.js.map": "https://zhaosean.com/dist/gofood/static/js/2.4eda7c0c.chunk.js.map",
-    "static/js/3.7f5b3013.chunk.js": "https://zhaosean.com/dist/gofood/static/js/3.7f5b3013.chunk.js",
-    "static/js/3.7f5b3013.chunk.js.map": "https://zhaosean.com/dist/gofood/static/js/3.7f5b3013.chunk.js.map",
+    "main.css": "https://zhaosean.com/dist/gofood/static/css/main.949e8e98.chunk.css",
+    "main.js": "https://zhaosean.com/dist/gofood/static/js/main.b900003f.chunk.js",
+    "main.js.map": "https://zhaosean.com/dist/gofood/static/js/main.b900003f.chunk.js.map",
+    "runtime-main.js": "https://zhaosean.com/dist/gofood/static/js/runtime-main.a9fb90fb.js",
+    "runtime-main.js.map": "https://zhaosean.com/dist/gofood/static/js/runtime-main.a9fb90fb.js.map",
+    "static/js/2.03f1046d.chunk.js": "https://zhaosean.com/dist/gofood/static/js/2.03f1046d.chunk.js",
+    "static/js/2.03f1046d.chunk.js.map": "https://zhaosean.com/dist/gofood/static/js/2.03f1046d.chunk.js.map",
+    "static/js/3.9a9ec96c.chunk.js": "https://zhaosean.com/dist/gofood/static/js/3.9a9ec96c.chunk.js",
+    "static/js/3.9a9ec96c.chunk.js.map": "https://zhaosean.com/dist/gofood/static/js/3.9a9ec96c.chunk.js.map",
     "index.html": "https://zhaosean.com/dist/gofood/index.html",
-    "static/css/main.d58fa168.chunk.css.map": "https://zhaosean.com/dist/gofood/static/css/main.d58fa168.chunk.css.map",
-    "static/js/2.4eda7c0c.chunk.js.LICENSE.txt": "https://zhaosean.com/dist/gofood/static/js/2.4eda7c0c.chunk.js.LICENSE.txt"
+    "static/css/main.949e8e98.chunk.css.map": "https://zhaosean.com/dist/gofood/static/css/main.949e8e98.chunk.css.map",
+    "static/js/2.03f1046d.chunk.js.LICENSE.txt": "https://zhaosean.com/dist/gofood/static/js/2.03f1046d.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.d1ac050d.js",
-    "static/js/2.4eda7c0c.chunk.js",
-    "static/css/main.d58fa168.chunk.css",
-    "static/js/main.4ad0eab9.chunk.js"
+    "static/js/runtime-main.a9fb90fb.js",
+    "static/js/2.03f1046d.chunk.js",
+    "static/css/main.949e8e98.chunk.css",
+    "static/js/main.b900003f.chunk.js"
   ]
 }
