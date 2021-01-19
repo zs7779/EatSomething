@@ -10,7 +10,11 @@ function PlaceInfoCard({restaurant, verbose}: {restaurant: restaurantType, verbo
             <>
                 <h5>Info</h5>
                 <h6>{restaurant.name}</h6>
-                <div className="embedmap p-1" style={{height: "200px", backgroundColor: "green"}}></div>
+                <div>
+                    <a href={`https://www.google.ca/maps/dir//${restaurant.address}`}>
+                    <img src={`https://maps.googleapis.com/maps/api/staticmap?center=${restaurant.location.lat},${restaurant.location.lng}&markers=${restaurant.location.lat},${restaurant.location.lng}&zoom=13&size=286x200&key=${process.env.REACT_APP_MAP_API_KEY}`} />
+                    </a>
+                </div>
                 <div className="font-weight-bold mt-3">Location</div>
                 <div>{restaurant.address}</div>
                 <div className="font-weight-bold mt-3">Hours of Operation</div>

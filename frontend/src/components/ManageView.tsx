@@ -42,8 +42,8 @@ function ManageView() {
     }
     
     return (
-        <div className="business-view p-3">
-            <h1 className="font-weight-bold">My Restaurants</h1>
+        <div className="business-view">
+            <h1 className="font-weight-bold p-3">My Restaurants</h1>
             {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
             {adding ? <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(false)}>Cancel</button> :
                       <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(true)}>Add a restaurant</button>}

@@ -63,7 +63,6 @@ function PlaceView() {
 
     return (
     <div className="place-view">
-        <div></div>
         {restaurant? <div className="place-info p-3">
             <h1 className="font-weight-bold">{restaurant.name}</h1>
             {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}

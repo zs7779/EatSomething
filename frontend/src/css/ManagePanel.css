@@ -1,15 +1,16 @@
 .manage-panel {
     display: grid;
+    width: 1200px;
 }
 .manage-panel .manage-order-card:hover {
     background-color: rgb(252, 252, 252);
 }
 
 .manage-panel-3 {
-    grid-template-columns: auto 1200px auto;
+    grid-template-columns: 1200px;
 }
 .manage-panel-4 {
-    grid-template-columns: auto 840px 360px auto;
+    grid-template-columns: 840px 360px;
 }
 
 a.manage-restaurant-link {
