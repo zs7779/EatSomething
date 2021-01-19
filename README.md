@@ -1,7 +1,9 @@
 **GoFood**
 
 
-This is a food takeout / food delivery platform. On this platform restaurant managers can set up their home page and put menus on display, where customers can order food on a takeout / delivery order. This project is written in HTML, CSS, Typescript, React, Node.js, Express.js, MongoDB.
+This is a food takeout / food delivery platform. On this platform restaurant managers can set up their home page and put menus on display, where customers can order food on a takeout / delivery order. This project is written in HTML, CSS, Typescript, React, Node.js, Express.js, MongoDB. Also used: AWS EC2, Nginx, Google Map API.
+
+**Big disclaimer! All "restaurants" on this website are NOT real! They are programmatically generated for demonstration purpose only!**
 
 
 Managers can:
