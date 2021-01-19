@@ -1,4 +1,9 @@
 .order-view {
+    display: grid;
+    grid-template-columns: auto 1200px auto;
+}
+
+.confirmation-view {
     min-height: 90vh;
     display: grid;
     place-items: center;
@@ -18,7 +23,7 @@
 
 .order-panel .card {
     padding: 0.5em;
-    max-width: 500px;
+    width: 480px;
 }
 
 .order-panel a {

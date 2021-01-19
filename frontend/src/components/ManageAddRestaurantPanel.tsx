@@ -25,6 +25,7 @@ function ManageAddRestaurantPanel({handleAddRestaurant}: {handleAddRestaurant: (
     const [takeaway, setTakeaway] = useState(false);
     const [menus, setMenus] = useState<menuType[]>([]);
     const [location, setLocation] = useState({lat: "0", lng: "0"});
+    const [ errorMessage, setErrorMessage ] = useState<string>();
     
     const keywordChoices = ["Canadian", "Korean", "Chinese", "Indian", "Italian", "French", "Turkish", "American", "Mexican", "Japanese", "Thai",
     "Vietnam", "Mongolian", "Spanish", "European", "Asian", "Mediterranean", "African", "Fusion", "Continental", 
@@ -48,27 +49,37 @@ function ManageAddRestaurantPanel({handleAddRestaurant}: {handleAddRestaurant: (
 
     const handleSubmit = (e: FormEvent<HTMLElement>) => {
         e.preventDefault();
-        manageService.addRestaurant({
-            name,
-            address,
-            opening_time: openingTime,
-            keywords,
-            payment,
-            delivery,
-            takeaway,
-            menus,
-            location: {lat: parseFloat(location.lat), lng: parseFloat(location.lng)}
-        })
-            .then(res => {
-                handleAddRestaurant(res);
+        setErrorMessage(undefined);
+        if (name === "") setErrorMessage("Name cannot be empty");
+        else if (address === "") setErrorMessage("Address cannot be empty");
+        else if (keywords.length === 0) setErrorMessage("Please choose at least one keyword");
+        else if (menus.length === 0) setErrorMessage("Please have at least one menu");
+        else if (menus.filter(menu => menu.items.length == 0).length > 0) setErrorMessage("Please have at least one item in a menu");
+        else if (location.lat === "0" || location.lng === "0") setErrorMessage("Please enter valid coordinates");
+        else {
+            manageService.addRestaurant({
+                name,
+                address,
+                opening_time: openingTime,
+                keywords,
+                payment,
+                delivery,
+                takeaway,
+                menus,
+                location: {lat: parseFloat(location.lat), lng: parseFloat(location.lng)}
             })
-            .catch(err => {
-                console.log(err.response.data.error);
-            });
+                .then(res => {
+                    handleAddRestaurant(res);
+                })
+                .catch(err => {
+                    setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
+                });
+        }
     }
 
     return (
         <form onSubmit={handleSubmit}>
+            {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
             <div className="form-group">
                 <label htmlFor="restaurantName"><h5>Restaurant Name:</h5></label>
                 <input type="text" className="form-control" id="restaurantName" placeholder="Restaurant Name"
@@ -134,6 +145,7 @@ function ManageAddRestaurantPanel({handleAddRestaurant}: {handleAddRestaurant: (
                 </div>
             </div><hr/>
             <ManageAddMenu menus={menus} setMenus={setMenus} /><hr/>
+            {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
             <button type="submit" className="btn btn-primary my-1">Submit</button>
         </form>
     )

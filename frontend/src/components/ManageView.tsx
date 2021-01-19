@@ -12,15 +12,17 @@ function ManageView() {
     const [ manager, setManager ] = useState<managerType>({username: "", name: "", restaurants:[]} as managerType);
     const [ adding, setAdding ] = useState(false);
     const { placeID }: { placeID:string } = useParams();
-    
+    const [ errorMessage, setErrorMessage ] = useState<string>();
+
     useEffect(()=>{
+        setErrorMessage(undefined);
         if (placeID) {
             manageService.manageRestaurant(placeID)
                 .then(res => {
                     setManager(res);
                 })
                 .catch(err => {
-                    console.log(err.response.data.error);
+                    setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
                 });
         } else {
             manageService.manageRestaurant()
@@ -28,7 +30,7 @@ function ManageView() {
                     setManager(res);
                 })
                 .catch(err => {
-                    console.log(err.response.data.error);
+                    setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
                 });
         }
         
@@ -42,13 +44,14 @@ function ManageView() {
     return (
         <div className="business-view p-3">
             <h1 className="font-weight-bold">My Restaurants</h1>
+            {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
             {adding ? <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(false)}>Cancel</button> :
                       <button type="button" className="btn btn-outline-primary" onClick={() => setAdding(true)}>Add a restaurant</button>}
             <hr/>
             {adding ? <ManageAddRestaurantPanel handleAddRestaurant={handleAddRestaurant}/> : 
-                      <ManagePanel restaurants={manager.restaurants}/>}
+                      <ManagePanel restaurants={manager.restaurants} placeID={placeID} />}
         </div>
-    )
+    );
 }
     
 export default ManageView;

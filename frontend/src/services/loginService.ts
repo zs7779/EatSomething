@@ -25,4 +25,14 @@ const getToken = () => {
   return window.localStorage.getItem('logintoken');
 }
 
-export default { login, logout, storeToken, getToken };
+const checkToken = async () => {
+  const response = await axios.post(baseUrl, {}, {
+    headers: {
+        Authorization: `bearer ${getToken()}`,
+        "Content-type": "application/json"
+    }
+  });
+  return response.data;
+}
+
+export default { login, logout, storeToken, getToken, checkToken };

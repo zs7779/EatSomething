@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Switch, Route, Link, Redirect
@@ -19,17 +19,29 @@ import './css/App.css';
 function App() {
   const [ loginToken, setLoginToken ] = useState<string|null>(loginService.getToken());
 
+  useEffect(() => {
+    if (loginToken) {
+      loginService.checkToken()
+        .catch(err => {
+          if (err.response?.status === 401) { // bad token
+            loginService.logout();
+            setLoginToken(null);
+          }
+        });
+    }
+  }, [loginToken]);
+
   return (
-    <div>
+    <div id="app">
       <Router>
       <header className="app-header d-flex justify-content-between">
         <ul className="nav">
           <li className="nav-item">
             <Link to="/" className="mx-1">Home</Link>
           </li>
-          <li className="nav-item">
+          {loginToken && <li className="nav-item">
             <Link to="/order" className="mx-1">My Orders</Link>
-          </li>
+          </li>}
         </ul>
         {loginToken ? <ul className="nav">
           <li className="nav-item">
@@ -41,16 +53,14 @@ function App() {
         </ul> : 
         <ul className="nav">
           <li className="nav-item">
-            <Link to="/login" className="mx-1">login</Link>
+            <Link to="/login" className="mx-1">Login</Link>
           </li>
           <li className="nav-item">
-            <Link to="/register" className="mx-1">register</Link>
+            <Link to="/register" className="mx-1">Register</Link>
           </li>
         </ul>}
-        
 
       </header>
-
         <Switch>
           <Route exact path="/">
             <SearchPanel />
@@ -58,14 +68,17 @@ function App() {
           <Route path="/search">
             <SearchView />
           </Route>
-          <Route path="/order/:orderID?">
-            <OrderView />
+          <Route path="/place/:placeID">
+            <PlaceView />
           </Route>
           <Route path="/register">
             <RegisterView />
           </Route>
           <Route path="/login">
-            {loginToken ? <Redirect to="/manage"/> : <LoginView setLoginToken={setLoginToken}/>}
+            {loginToken ? <Redirect to="/"/> : <LoginView setLoginToken={setLoginToken}/>}
+          </Route>
+          <Route path="/order/:orderID?">
+          {loginToken ? <OrderView /> : <Redirect to="/login"/>}
           </Route>
           <Route path="/manage/:placeID?">
             {loginToken ? <ManageView /> : <Redirect to="/login"/>}
@@ -73,12 +86,8 @@ function App() {
           <Route path="/logout">
             {loginToken ? <LogoutView  setLoginToken={setLoginToken}/> : <Redirect to="/"/>}
           </Route>
-          <Route path="/place/:placeID">
-            <PlaceView />
-          </Route>
         </Switch>
       </Router>
-      
     </div>
   );
 }

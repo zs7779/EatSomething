@@ -5,10 +5,11 @@ import registerService from '../services/registerService';
 
 
 function RegisterView() {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [redirect, setRedirect] = useState(false);
+    const [ username, setUsername ] = useState("");
+    const [ email, setEmail ] = useState("");
+    const [ password, setPassword ] = useState("");
+    const [ redirect, setRedirect ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState<string>();
 
     const handleUsername = (event: ChangeEvent<HTMLInputElement>) => {
         setUsername(event.target.value);
@@ -22,20 +23,23 @@ function RegisterView() {
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        
+        setErrorMessage(undefined);
         registerService.registerAccount(username, email, password)
-            .then(res => {
+            .then(() => {
                 setRedirect(true);
             }).catch(err => {
-                console.log(err.response.data.error);
+                setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
             });
     }
     if (redirect) {
         return <Redirect to="/login"/>
     } else {
         return (
-            <div>
+            <div className="login-form">
                 <form onSubmit={handleSubmit} className="card card-body">
+                    <h4>Please register</h4>
+                    {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
+                    <hr/>
                     <div className="form-group">
                         <input className="form-control" autoFocus type="text" name="username" onChange={handleUsername} placeholder="Username" required/>
                     </div>

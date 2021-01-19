@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { createStore, combineReducers  } from 'redux';
 import { Provider } from 'react-redux';
 import App from './App';
+import loginReducer from './reducers/loginReducer';
 import modalReducer from './reducers/modalReducer';
 import orderReducer from './reducers/orderReducer';
 import reportWebVitals from './reportWebVitals';
@@ -11,8 +12,9 @@ import './css/index.css';
 
 
 const store = createStore(combineReducers({
-    modal: modalReducer,
-    order: orderReducer,
+  login: loginReducer,
+  modal: modalReducer,
+  order: orderReducer,
 }));
 
 ReactDOM.render(

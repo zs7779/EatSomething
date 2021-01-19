@@ -17,21 +17,26 @@ function OrderStatusModal({order, setOrder, updateOrder}: {
     updateOrder: (arg0: orderBEType) => void
 }) {
     const [ show, setShow ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState<string>();
 
     const handleClose = () => {
+        setErrorMessage(undefined);
         setOrder(undefined);
     }
     const handleUpdate = () => {
+        setErrorMessage(undefined);
         if (order?.restaurant.id && order?.id) {
             manageService.updateOrderStatus(order.restaurant.id, order.id, "complete")
                 .then(res => {
                     updateOrder(res);
+                    handleClose();
                 })
                 .catch(err => {
-                    console.log(err.response.data.error);
+                    setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
                 });
+        } else {
+            handleClose();
         }
-        handleClose();
     }
 
     useEffect(() => {
@@ -48,6 +53,7 @@ function OrderStatusModal({order, setOrder, updateOrder}: {
                 <Modal.Title>Order {order?.id}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
                 <div>Order is complete?</div>
             </Modal.Body>
             <Modal.Footer className="justify-content-between">
@@ -63,9 +69,10 @@ function OrderStatusModal({order, setOrder, updateOrder}: {
     );
 }
 
-function ManagePanel({restaurants}: {restaurants: restaurantType[]}) {
+function ManagePanel({restaurants, placeID}: {restaurants: restaurantType[], placeID?: string}) {
     const [ orders, setOrders ] = useState<orderBEType[]>([]);
     const [ orderToUpdate, setOrderToUpdate ] = useState<orderBEType>();
+    const [ errorMessage, setErrorMessage ] = useState<string>();
 
     const handleOrderStatus = (order: orderBEType) => {
         setOrderToUpdate(order);
@@ -76,22 +83,27 @@ function ManagePanel({restaurants}: {restaurants: restaurantType[]}) {
     }
 
     useEffect(() => {
-        if (restaurants.length == 1 && restaurants[0].id) {
+        if (placeID && restaurants.length == 1 && restaurants[0].id) {
             manageService.restaurantOrders(restaurants[0].id)
                 .then(res => {
                     setOrders(res);
                 })
                 .catch(err => {
-                    console.log(err.response.data.error);
+                    setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
                 });
         }
     }, [restaurants]);
 
+    const imcompleteOrders = orders.filter(order => !order.complete);
+    const pastOrders =  orders.filter(order => order.complete);
+
     return (
         <>
-        <div className={restaurants.length === 1 ? "manage-panel manage-panel-4" : "manage-panel manage-panel-3"}>
+        {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
+        {restaurants.length === 0 ? <div>{"You don't have any restaurant registered at the moment."}</div> :
+        <div className={placeID && restaurants.length === 1 ? "manage-panel manage-panel-4" : "manage-panel manage-panel-3"}>
             <div></div>
-            {restaurants.length !== 1 ? <div className="d-flex flex-wrap">{
+            {placeID === undefined ? <div className="d-flex flex-wrap">{
                 restaurants.map((restaurant) => (
                 <Link to={manageService.routeToRestaurant(restaurant.id)} key={restaurant.id} className="manage-restaurant-link">
                 <div className="card manage-restaurant-card m-2">
@@ -104,27 +116,29 @@ function ManagePanel({restaurants}: {restaurants: restaurantType[]}) {
             ))
             }</div> : <div>
                 <h5>Imcomplete Orders:</h5>
+                {imcompleteOrders.length === 0 ? <div>No recent order</div> :
                 <div className="mt-2">
-                    {orders.filter(order => !order.complete).map(order => (
+                    {imcompleteOrders.map(order => (
                         <div key={order.id} className="card manage-order-card m-2" onClick={()=>handleOrderStatus(order)}>
                             <OrderInfoCard order={order} title={`Order ${order.id}`} footer={`$${orderService.totalPrice(order)}`} />
                         </div>
                     ))}
-                </div>
+                </div>}
                 <hr/>
                 <h5>Past Orders:</h5>
+                {pastOrders.length === 0 ? <div>No recent order</div> :
                 <div className="mt-2">
-                    {orders.filter(order => order.complete).map(order => (
+                    {pastOrders.map(order => (
                         <div key={order.id} className="card manage-order-card m-2" onClick={()=>handleOrderStatus(order)}>
                             <OrderInfoCard order={order} title={`Order ${order.id}`} footer={`$${orderService.totalPrice(order)}`} />
                         </div>
                     ))}
-                </div>
+                </div>}
             </div>}
-            {restaurants.length === 1 ? <div className="card card-body shadow-sm mt-3">
+            {placeID && restaurants.length === 1 ? <div className="card card-body shadow-sm mt-3">
                 <PlaceInfoCard restaurant={restaurants[0]} verbose={true} />
             </div> : <div></div>}
-        </div>
+        </div>}
         <OrderStatusModal order={orderToUpdate} setOrder={setOrderToUpdate} updateOrder={updateOrder} />
     </>
     );

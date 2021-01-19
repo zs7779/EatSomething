@@ -39,6 +39,7 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
     const [ restaurants, setRestaurants ] = useState<restaurantType[]>([]);
     const history = useHistory();
     const mapElement = document.getElementById("map");
+    const [ errorMessage, setErrorMessage ] = useState<string>();
 
     useEffect(() => {
         if (mapElement) {
@@ -83,7 +84,8 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
     }, [map, locationQuery, address]);
 
     // search restaurants at location
-    useEffect(() => {        
+    useEffect(() => {
+        setErrorMessage(undefined);
         if (location) {
             if (keyword === oldKeyword && location === oldLocation) return;
             
@@ -94,7 +96,7 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
                     setOldLocation(location);
                 })
                 .catch(err => {
-                    console.log(err.response.data.error);
+                    setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
                 });
         }
     }, [locationQuery, address, keyword]);
@@ -102,6 +104,7 @@ function MapPanel({keyword, location, locationQuery, address, setLocation} : {
     return (
         <div className="map-panel">
             <div id="searchResult">
+                {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
                 <ul className="list-group">
                     {restaurants.map(restaurant => 
                     <li key={restaurant.id} className="list-group-item info-card p-0">

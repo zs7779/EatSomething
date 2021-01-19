@@ -13,52 +13,60 @@ orderRouter.get('/', async (request: Request, response: Response) => {
     const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'Token missing' });    
-    } 
-    const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'Token invalid' });
     }
-    User.findById(decodedToken.id)
-        .then(user => {
-            if (!user) {
-                return response.status(404).json({ error: 'User not found' });
-            }
-            Order.find({user: user._id})
-                .sort({createTime: -1})
-                .populate("restaurant")
-                .then(res => {
-                    return response.json(res);
-                })
-                .catch(err => {
-                    return response.status(500).json({ error: err.message });
-                });
-        });
+    try {
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'Token invalid' });
+        }
+        User.findById(decodedToken.id)
+            .then(user => {
+                if (!user) {
+                    return response.status(404).json({ error: 'User not found' });
+                }
+                Order.find({user: user._id})
+                    .sort({createTime: -1})
+                    .populate("restaurant")
+                    .then(res => {
+                        return response.json(res);
+                    })
+                    .catch(err => {
+                        return response.status(500).json({ error: err.message });
+                    });
+            });
+    } catch (err) {
+        return response.status(401).json({ error: 'Please login' });
+    }
 });
 
 orderRouter.get('/:id', async (request: Request, response: Response) => {
     const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'Token missing' });    
-    } 
-    const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'Token invalid' });
     }
-    User.findById(decodedToken.id)
-        .then(user => {
-            if (!user) {
-                return response.status(404).json({ error: 'User not found' });
-            }
-            const id = request.params.id;
-            Order.findById(id)
-                .populate("restaurant")
-                .then(res => {
-                    return response.json(res);
-                })
-                .catch(err => {
-                    return response.status(500).json({ error: err.message });
-                })
-        });
+    try { 
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'Token invalid' });
+        }
+        User.findById(decodedToken.id)
+            .then(user => {
+                if (!user) {
+                    return response.status(404).json({ error: 'User not found' });
+                }
+                const id = request.params.id;
+                Order.findById(id)
+                    .populate("restaurant")
+                    .then(res => {
+                        return response.json(res);
+                    })
+                    .catch(err => {
+                        return response.status(500).json({ error: err.message });
+                    })
+            });
+    } catch (err) {
+        return response.status(401).json({ error: 'Please login' });
+    }
 });
 
 export default orderRouter;

@@ -12,10 +12,12 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+        minlength: 1,
         unique: true
     },
     email: {
         type: String,
+        minlength: 3,
         required: true,
     },
     passwordHash: {

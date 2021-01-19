@@ -18,18 +18,21 @@ function PlaceView() {
     const order = useSelector((state: {modal:DefaultRootState, order:DefaultRootState}) => state.order as orderItemType[]);
     const dispatch = useDispatch();
     const history = useHistory();
+    const [ errorMessage, setErrorMessage ] = useState<string>();
 
     useEffect(() => {
+        setErrorMessage(undefined);
         restaurantService.getRestaurant(placeID)
             .then((res) => {
                 setRestaurant(res);
             })
             .catch(err => {
-                console.log(err.response.data.error);
+                setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
             });
     }, [placeID]);
 
     const handleShow = () => {
+        setErrorMessage(undefined);
         if (restaurant && restaurant.id) {
             restaurantService.placeOrderAtRestaurant(restaurant.id, order)
                 .then(res => {
@@ -37,7 +40,7 @@ function PlaceView() {
                     history.push(orderService.routeToConfirmation(res.id));
                 })
                 .catch(err => {
-                    console.log(err.response.data.error);
+                    setErrorMessage(err.response?.data?.error || "Something went wrong. Please try again later.");
                 });
         }
     };
@@ -61,14 +64,15 @@ function PlaceView() {
     return (
     <div className="place-view">
         <div></div>
-        {restaurant && <div className="place-info p-3">
+        {restaurant? <div className="place-info p-3">
             <h1 className="font-weight-bold">{restaurant.name}</h1>
+            {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
             <div className="font-weight-bold">
                 {restaurant.rating && <RatingStar rating={restaurant.rating}/>} <span>{restaurant.user_ratings_total} reviews</span> · {restaurant.price_level && <PriceSign priceLevel={restaurant.price_level}/>} · <span>{restaurant.keywords.join(" · ")}</span>
             </div>
             <hr/>
             <MenuPanel menu={restaurant.menus}></MenuPanel>
-        </div>}
+        </div> : <div>{errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}</div>}
         {restaurant && <div className="booking-info p-3">
             <div className="card card-body shadow-sm rounded">
                 <h5>Order</h5>

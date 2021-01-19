@@ -11,6 +11,7 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
     const [ location, setLocation ] = useState(lastLocation || "");
     const history = useHistory();
     const path = useLocation();
+    const [ errorMessage, setErrorMessage ] = useState<string>();
     
     useEffect(() => {
         if (lastLocation) {
@@ -19,14 +20,15 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
     }, [lastLocation]);
 
     const searchCurrentLocation = (): void => {
+        setErrorMessage(undefined);
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((loc: locationType): void => {
                 history.push(searchService.routeToSearch(query, `${loc.coords.latitude},${loc.coords.longitude}`));
             }, () => {
-                console.log("An error occured. Cannot find your location.");    
+                setErrorMessage("An error occured. Cannot find your location.");    
             });
         } else {
-            console.log("Navigator unavailable. Cannot find your location.");
+            setErrorMessage("Navigator unavailable. Cannot find your location.");
         }
     }
     const onQuery = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -64,6 +66,7 @@ function SearchPanel({lastQuery, lastLocation}: searchQueryType) {
                     <button className="btn btn-primary px-5 input-box" onClick={onSearch}>Go</button>
                 </div>
             </form>
+            {errorMessage && <div className="error-message p-1 m-1">{errorMessage}</div>}
             </div>
         </div>
     )

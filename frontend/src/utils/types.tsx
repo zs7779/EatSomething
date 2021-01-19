@@ -1,3 +1,8 @@
+export interface loginType {
+    username: string;
+    token: string;
+}
+
 export interface credentialType {
     username: string;
     password: string;

@@ -63,39 +63,43 @@ restaurantRouter.post('/:id', async (request: Request, response: Response) => {
     const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'Token missing' });    
-    } 
-    const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'Token invalid' });
     }
-    User.findById(decodedToken.id)
-        .then(user => {
-            if (!user) {
-                return response.status(404).json({ error: 'User not found' });
-            }
-            const id = request.params.id;
-            Restaurant.findById(id)
-                .then(restaurant => {
-                    if (!restaurant) {
-                        return response.status(404).json({ error: 'Restaurant not found' });
-                    }
-                    const body = request.body;
-                    const newOrder = new Order({
-                        user: user._id,
-                        restaurant: restaurant._id,
-                        items: body,
+    try {
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'Token invalid' });
+        }
+        User.findById(decodedToken.id)
+            .then(user => {
+                if (!user) {
+                    return response.status(404).json({ error: 'User not found' });
+                }
+                const id = request.params.id;
+                Restaurant.findById(id)
+                    .then(restaurant => {
+                        if (!restaurant) {
+                            return response.status(404).json({ error: 'Restaurant not found' });
+                        }
+                        const body = request.body;
+                        const newOrder = new Order({
+                            user: user._id,
+                            restaurant: restaurant._id,
+                            items: body,
+                        });
+                        
+                        newOrder.save()
+                            .then(res => response.json(res))
+                            .catch(err => {
+                                return response.status(500).json({ error: err.message });
+                            });;
                     });
-                    
-                    newOrder.save()
-                        .then(res => response.json(res))
-                        .catch(err => {
-                            return response.status(500).json({ error: err.message });
-                        });;
-                });
-        })
-        .catch(err => {
-            return response.status(500).json({ error: err.message });
-        });;
+            })
+            .catch(err => {
+                return response.status(500).json({ error: err.message });
+            });;
+    } catch (err) {
+        return response.status(401).json({ error: 'Please login' });
+    }
 });
 
 export default restaurantRouter;
