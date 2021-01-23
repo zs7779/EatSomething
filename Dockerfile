@@ -6,3 +6,4 @@ WORKDIR /usr/src/app
 COPY backend/package*.json ./
 RUN npm ci --only=production --verbose
 COPY backend/ ./
+RUN sed -i 's/%MAP_API_KEY%/'$MAP_API_KEY'/g' ./dist/index.html
