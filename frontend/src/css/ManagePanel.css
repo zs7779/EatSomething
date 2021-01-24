@@ -2,6 +2,12 @@
     display: grid;
     width: 1200px;
 }
+
+.manage-panel a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .manage-panel .manage-order-card:hover {
     background-color: rgb(252, 252, 252);
 }

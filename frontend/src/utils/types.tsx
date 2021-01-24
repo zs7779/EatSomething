@@ -78,6 +78,7 @@ export interface orderBEType {
     id: string;
     createTime: Date,
     complete: boolean,
+    rated: boolean,
     restaurant: {id: string, name: string},
     items: orderItemBEType[]
 }

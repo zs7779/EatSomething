@@ -129,7 +129,7 @@ function ManagePanel({restaurants, placeID}: {restaurants: restaurantType[], pla
                     {pastOrders.length === 0 ? <div>No recent order</div> :
                     <div className="mt-2">
                         {pastOrders.map(order => (
-                            <div key={order.id} className="card manage-order-card m-2" onClick={()=>handleOrderStatus(order)}>
+                            <div key={order.id} className="card manage-order-card m-2">
                                 <OrderInfoCard order={order} title={`Order ${order.id}`} footer={`$${orderService.totalPrice(order)}`} />
                             </div>
                         ))}

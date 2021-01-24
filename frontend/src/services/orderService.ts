@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import loginService from './loginService';
-import { orderBEType, orderItemBEType } from '../utils/types';
+import { orderItemType, orderBEType, orderItemBEType } from '../utils/types';
 
 
 const frontendURL = '/order';
@@ -25,6 +25,34 @@ const getOrder = async (id: string) => {
     });
 }
 
+const placeOrderAtRestaurant = async (id: string, items: orderItemType[]) => {
+    // id is restaurant id
+    const response = await axios.post(`${backendURL}/`, {
+        id,
+        items
+    },
+    {
+        headers: {
+            Authorization: `bearer ${loginService.getToken()}`,
+            "Content-type": "application/json"
+        }
+    });
+    return response.data;
+}
+
+const rateOrder = async (id: string, rating: number) => {
+    const response = await axios.post(`${backendURL}/${id}`, {
+        rating
+    },
+    {
+        headers: {
+            Authorization: `bearer ${loginService.getToken()}`,
+            "Content-type": "application/json"
+        }
+    });
+    return response.data;
+}
+
 const routeToConfirmation = (id: string) => {
     return `${frontendURL}/${id}`;
 }
@@ -35,4 +63,4 @@ const totalPrice = (order: orderBEType) => {
     }, 0).toFixed(2);
 }
 
-export default { getAllOrders, getOrder, routeToConfirmation, totalPrice };
+export default { getAllOrders, getOrder, rateOrder, placeOrderAtRestaurant, routeToConfirmation, totalPrice };

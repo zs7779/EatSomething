@@ -5,6 +5,7 @@ import orderService from '../services/orderService';
 import { orderBEType } from '../utils/types';
 import '../css/OrderView.css';
 import OrderInfoCard from './OrderInfoCard';
+import OrderRatingCard from './OrderRatingCard';
 
 
 function OrderView() {
@@ -45,6 +46,7 @@ function OrderView() {
                         <div className="order-panel">
                             <div className="card">
                                 <OrderInfoCard order={order} title={`Your order is ${order.complete ? "completed" : "confirmed"}!`} footer={`Total: $${orderService.totalPrice(order)}`} />
+                                {order.complete && <><hr/><OrderRatingCard order={order} setOrder={setOrder} setErrorMessage={setErrorMessage} /></>}
                             </div>
                         </div>
                     </div> :

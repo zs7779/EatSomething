@@ -11,6 +11,7 @@ import Order from '../models/order';
 const manageRouter = Router();
 
 manageRouter.get('/', async (request: Request, response: Response) => {
+    // Get manager info and all their restaurants. Login requred.
     const token = getTokenFromRequest(request);
     
     if (!token) {
@@ -27,11 +28,11 @@ manageRouter.get('/', async (request: Request, response: Response) => {
                 if (user) {
                     response.json(user);
                 } else {
-                    return response.status(404).json({ error: 'Cannot find user with specified ID' });
+                    return response.status(404).json({ error: 'User not found' });
                 }
             })
             .catch(err => {
-                return response.status(500).json({ error: err.message });
+                return response.status(500).json({ error: 'Server error, please try again later' });
             });
     } catch (err) {
         return response.status(401).json({ error: 'Please login' });
@@ -40,6 +41,7 @@ manageRouter.get('/', async (request: Request, response: Response) => {
 });
 
 manageRouter.get('/restaurants/:id', async (request: Request, response: Response) => {
+    // Get manager info and restaurant info by id. Login requred.
     const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'Token missing' });    
@@ -59,11 +61,11 @@ manageRouter.get('/restaurants/:id', async (request: Request, response: Response
                 if (user) {
                     response.json(user);
                 } else {
-                    return response.status(404).json({ error: 'Cannot find user with specified ID' });
+                    return response.status(404).json({ error: 'User not found' });
                 }
             })
             .catch(err => {
-                return response.status(500).json({ error: err.message });
+                return response.status(500).json({ error: 'Server error, please try again later' });
             });
     } catch (err) {
         return response.status(401).json({ error: 'Please login' });
@@ -71,6 +73,7 @@ manageRouter.get('/restaurants/:id', async (request: Request, response: Response
 });
 
 manageRouter.get('/restaurants/:id/orders', async (request: Request, response: Response) => {
+    // Get orders placed at restaurant by id. Login requred.
     const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'Token missing' });    
@@ -81,14 +84,23 @@ manageRouter.get('/restaurants/:id/orders', async (request: Request, response: R
             return response.status(401).json({ error: 'Token invalid' });
         }
         const id = request.params.id;
-        Order.find({restaurant: id, complete: false})
-            .sort({createTime: -1})
-            .populate("restaurant", "_id name")
-            .then(orders => {            
-                response.json(orders);
+        Restaurant.findOne({_id: id, manager: decodedToken.id})
+            .then((res) => {
+                if (!res) {
+                    return response.status(404).json({ error: 'Restaurant not found' });
+                }
+                Order.find({restaurant: id, complete: false})
+                    .sort({createTime: -1})
+                    .populate("restaurant", "_id name")
+                    .then(orders => {            
+                        response.json(orders);
+                    })
+                    .catch(err => {
+                        return response.status(500).json({ error: 'Server error, please try again later' });
+                    });
             })
             .catch(err => {
-                return response.status(500).json({ error: err.message });
+                return response.status(500).json({ error: 'Server error, please try again later' });
             });
     } catch (err) {
         return response.status(401).json({ error: 'Please login' });
@@ -97,6 +109,7 @@ manageRouter.get('/restaurants/:id/orders', async (request: Request, response: R
 
 
 manageRouter.put('/restaurants/:rid/orders/:oid', async (request: Request, response: Response) => {
+    // Manager update of order by id at restaurant by id. Login requred.
     const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'Token missing' });    
@@ -115,21 +128,21 @@ manageRouter.put('/restaurants/:rid/orders/:oid', async (request: Request, respo
                     if (body.status === "complete") {    
                         order.complete = true;                
                         order.save()
-                        .then(res => {               
-                            return response.json(res);
-                        })
-                        .catch(err => {
-                            return response.status(500).json({ error: err.message });
-                        });
+                            .then(res => {               
+                                return response.json(res);
+                            })
+                            .catch(err => {
+                                return response.status(500).json({ error: 'Server error, please try again later' });
+                            });
                     } else {
                         return response.status(400).json({ error: 'Unknown status' });
                     }
                 } else {
-                    return response.status(404).json({ error: 'Cannot find this order' });
+                    return response.status(404).json({ error: 'Order not found' });
                 }
             })
             .catch(err => {
-                return response.status(500).json({ error: err.message });
+                return response.status(500).json({ error: 'Server error, please try again later' });
             });
     } catch (err) {
         return response.status(401).json({ error: 'Please login' });
@@ -137,6 +150,7 @@ manageRouter.put('/restaurants/:rid/orders/:oid', async (request: Request, respo
 });
 
 manageRouter.post('/restaurants', async (request: Request, response: Response) => {
+    // Register new restaurant. Login requred.
     const token = getTokenFromRequest(request);
     if (!token) {
         return response.status(401).json({ error: 'Token missing' });    
@@ -175,18 +189,18 @@ manageRouter.post('/restaurants', async (request: Request, response: Response) =
                             .then(res => {
                                 res.populate("restaurants", (err) => {
                                     if (err) {
-                                        return response.status(500).json({ error: err.message });
+                                        return response.status(500).json({ error: 'Server error, please try again later' });
                                     } else {
                                         return response.json(res);
                                     }
                                 });
                             })
                             .catch(err => {
-                                return response.status(500).json({ error: err.message });
+                                return response.status(500).json({ error: 'Server error, please try again later' });
                             });
                     })
                     .catch(err => {
-                        return response.status(500).json({ error: err.message });
+                        return response.status(500).json({ error: 'Server error, please try again later' });
                     });
             });
     } catch (err) {

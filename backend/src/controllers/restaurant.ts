@@ -1,26 +1,27 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, Router } from "express";
+import e, { Request, Response, Router } from "express";
 
 import { jwtType } from "../types";
 import { getTokenFromRequest } from "../utils";
 import User from '../models/user';
 import Restaurant from '../models/restaurant';
-import Order from '../models/order';
 
 
 const restaurantRouter = Router();
 
 restaurantRouter.get('/', async (request: Request, response: Response) => {
+    // Get all restaurants. Not sure this should exist
     Restaurant.find()
         .then(restaurants => {
             response.json(restaurants);
         })
         .catch(err => {
-            return response.status(500).json({ error: err.message });
+            return response.status(500).json({ error: 'Server error, please try again later' });
         });
 });
 
 restaurantRouter.get('/location/:location/query/:keywords?', async (request: Request, response: Response) => {
+    // Query restaurants given location and keywords
     const keywords = new RegExp(request.params.keywords ?
         request.params.keywords.trim().replace(/\s+/g, ' ').split(' ').join('|') :
         "", 'i');
@@ -49,57 +50,19 @@ restaurantRouter.get('/location/:location/query/:keywords?', async (request: Req
 });
 
 restaurantRouter.get('/:id', async (request: Request, response: Response) => {
+    // Get restaurant by id
     const id = request.params.id;
     Restaurant.findById(id)
         .then(restaurant => {
-            response.json(restaurant);
+            if (restaurant) {
+                response.json(restaurant);
+            } else {
+                return response.status(404).json({ error: 'Restaurant not found' });
+            }
         })
         .catch(err => {
-            return response.status(500).json({ error: err.message });
+            return response.status(500).json({ error: 'Server error, please try again later' });
         });
-});
-
-restaurantRouter.post('/:id', async (request: Request, response: Response) => {
-    const token = getTokenFromRequest(request);
-    if (!token) {
-        return response.status(401).json({ error: 'Token missing' });    
-    }
-    try {
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY as string) as jwtType;
-        if (!decodedToken.id) {
-            return response.status(401).json({ error: 'Token invalid' });
-        }
-        User.findById(decodedToken.id)
-            .then(user => {
-                if (!user) {
-                    return response.status(404).json({ error: 'User not found' });
-                }
-                const id = request.params.id;
-                Restaurant.findById(id)
-                    .then(restaurant => {
-                        if (!restaurant) {
-                            return response.status(404).json({ error: 'Restaurant not found' });
-                        }
-                        const body = request.body;
-                        const newOrder = new Order({
-                            user: user._id,
-                            restaurant: restaurant._id,
-                            items: body,
-                        });
-                        
-                        newOrder.save()
-                            .then(res => response.json(res))
-                            .catch(err => {
-                                return response.status(500).json({ error: err.message });
-                            });;
-                    });
-            })
-            .catch(err => {
-                return response.status(500).json({ error: err.message });
-            });;
-    } catch (err) {
-        return response.status(401).json({ error: 'Please login' });
-    }
 });
 
 export default restaurantRouter;

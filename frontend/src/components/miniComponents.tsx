@@ -17,7 +17,7 @@ export function RatingStar({rating, className}: {
         stars.push(<i key="laststar" className="fas fa-star-half"></i>);
     }
     return <>
-        <span className={className}>{rating}</span> <small className="text-warning">{stars}</small>
+        <span className={className}>{rating.toFixed(1)}</span> <small className="text-warning">{stars}</small>
     </>;
 }
 

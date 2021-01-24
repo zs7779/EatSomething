@@ -2,7 +2,9 @@ import mongoose, { Document } from "mongoose";
 import {orderItemObj} from "./orderItemObj";
 
 interface IOrder {
+    restaurant: String;
     complete: Boolean;
+    rated: Boolean;
 }
 const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -14,6 +16,7 @@ const orderSchema = new mongoose.Schema({
      },
     createTime: { type: Date, required: true, default: Date.now },
     complete: { type: Boolean, required: true, default: false },
+    rated: { type: Boolean, required: true, default: false },
 });
 orderSchema.set("toJSON", {
     transform: (document: Document, returnedObject: Document) => {

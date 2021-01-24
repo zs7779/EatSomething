@@ -34,7 +34,7 @@ function PlaceView() {
     const handleShow = () => {
         setErrorMessage(undefined);
         if (restaurant && restaurant.id) {
-            restaurantService.placeOrderAtRestaurant(restaurant.id, order)
+            orderService.placeOrderAtRestaurant(restaurant.id, order)
                 .then(res => {
                     dispatch(orderClear());
                     history.push(orderService.routeToConfirmation(res.id));
