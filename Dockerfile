@@ -6,3 +6,14 @@ WORKDIR /usr/src/app
 COPY backend/package*.json ./
 RUN npm ci --only=production --verbose
 COPY backend/ ./
+
+CMD [ "npm", "run", "prod" ]
+
+# docker rm -f gofood_web
+# docker build -t gofood .
+# docker run -d \
+#            --name gofood_web \
+#            -p 3000:3000 \
+#            --env-file .env \
+#            gofood
+# docker exec gofood_web python manage.py collectstatic --noinput
