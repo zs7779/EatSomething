@@ -1,6 +1,7 @@
 **GoFood**
 
 Check it out at https://gofood.zhaosean.com/
+Note the search function only works in near Toronto, Canada, because the database is populated with mock data generated using addresses near Toronto.
 
 
 This is a food takeout / food delivery platform. On this platform restaurant managers can set up their home page and put menus on display, where customers can order food on a takeout / delivery order. This project is written in HTML, CSS, Typescript, React, Node.js, Express.js, MongoDB. Also used: AWS EC2, Nginx, Google Map API.
